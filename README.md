@@ -43,6 +43,8 @@ YourVault/
     footnotes.md              footnote annotation protocol
     seed.md                   creative seed tag protocol
     todo.md                   todo aggregator protocol
+    claudecode.md             claudecode tag protocol
+    projects.md               project tracker protocol
     decisions.md              append-only design decisions log
     future.md                 deferred ideas, not yet built
     askclaude/
@@ -60,6 +62,8 @@ YourVault/
     todos.md                  living checkbox list from #todo tags
   _digests/                   weekly digests (YYYY-Wxx.md)
   _maps/                      Maps of Content (hand-curated hubs)
+  _projects/                  project tracker and Claude Code briefs
+    _index.md                 project dashboard
   Music Knowledge/            topic folder
   Literature/                 topic folder
   Hardware/                   topic folder
@@ -83,24 +87,37 @@ One per day. Today is always bare `YYYY-MM-DD.md`. After the day rolls over, the
 Template at `_templates/daily_template.md` gets auto-filled by Obsidian's core Daily Notes plugin. A reasonable starting template:
 
 ```
-#Music #dailymusic 
-
-#Quote #dailyquote 
-
-#Movie #dailyfilm 
-
-#Art #dailyart 
-
-#Literature 
+#dailymusic 
+#dailyquote 
+#dailyfilm 
+#dailyart 
 
 ---
 
+## Projects
+
+
 ---
+
+## Learning
+
+
+---
+
+found: 
+
+---
+
+#todo 
+
+---
+
+
 
 ---
 ```
 
-The daily intake tags at the top force you to ingest something interesting every day. The `---` separators give you landing spots for new sections. Adapt the template to your own habits.
+The daily intake tags at the top force you to ingest something interesting every day, starting with music as the lowest friction entry point. `## Projects` and `## Learning` are heading prompts that get you thinking about what you touched and what you absorbed, without requiring any particular format. "found" is an absolute lowest capture bar for anything worth noting. Pre-loaded `#todo` section for tasks. The blank zone at the end is for freeform dump. Adapt the template to your own habits.
 
 Daily notes are append-only. The assistant never rewrites the body. Its edits are limited to appending footnote markers (`[^c-1]`) and definitions in a `## footnotes` section at the bottom, or adding a small `> promoted: [[Target]]` footer when material gets lifted into a topic folder.
 
@@ -121,6 +138,8 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 `#inspo` - Section captured into `_compiled/inspiration.md`. Drop alongside a domain tag (`#Design`, `#Hardware`, etc) for filtering. Captures from the tag line down to the next `---` or next tag-prefixed line.
 
 `#seed` - Your own creative fragments (story ideas, premises, character sketches). Compiled per-topic into `Topic/seeds.md`. Same section capture as `#inspo` but routes by co-occurring domain tag. Seeds are things you generated. Inspo is things you grabbed. They compile separately because they want different treatment: inspo gets returned-to-and-consumed, seeds get returned-to-and-developed.
+
+`#claudecode` - Drop a build idea for a Claude Code project. The assistant creates `_projects/<slug>/brief.md` with a structured project plan ready to copy directly into a Claude Code session. Same footnote-marker workflow as `#askclaude`.
 
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
@@ -277,6 +296,20 @@ Auto-generated Sunday morning at `_digests/YYYY-Wxx.md`. Summary of the week's d
 
 Ask "rename the daily notes that need topics". The assistant grabs everything earlier than today, picks topics (most memorable/unusual thing), updates any internal wikilinks first, then renames. Current day is never touched.
 
+### Kick off a Claude Code project
+
+Drop `#claudecode` in a daily note with a build idea:
+
+```
+#claudecode build a second-brain backup system that syncs vault to IPFS
+```
+
+The assistant creates `_projects/<slug>/brief.md` with: project what/why, architecture, implementation plan, dependencies, open questions, and a ready-to-paste Claude Code session prompt. The brief is designed so you can copy it straight into a Claude Code session and start building immediately.
+
+### Check your project dashboard
+
+Open `_projects/_index.md`. The dashboard shows all projects across five tiers: active, queued, stale, sparks, and shipped. Each entry includes the project name, last-seen date with source tag, and a quick summary. Run this before standing up new work to surface anything you may have forgotten.
+
 ---
 
 ## The Todo Aggregator
@@ -301,6 +334,20 @@ Two tags for two kinds of "things worth coming back to":
 `#seed` is internal. A story fragment, a premise, a character sketch, a worldbuilding kernel. Origin is you. Compiles per-topic: `Literature/seeds.md`, `Hardware/seeds.md`, etc.
 
 Both use section capture (tag line to next `---`). Both use co-occurring domain tags for filtering. The split exists because they want different downstream treatment. Inspo gets consumed. Seeds get developed. Conflating them means you scroll past your own ideas thinking they are bookmarks.
+
+---
+
+## Project Tracker
+
+Your build ideas live in `_projects/_index.md`, a five-tier dashboard aggregating projects across the vault. Tiers: active (actively being developed), queued (ready when bandwidth opens), stale (no signal in 14+ days), sparks (raw ideas), and shipped (completed work).
+
+Each project carries a `last seen: YYYY-MM-DD` date with a source tag indicating where the signal came from (vault mention, session transcript, machine directory scan, GitHub activity).
+
+The tracker uses live signal sources to detect project health. These include vault grep (daily note mentions and `#Brightidea` tags), session transcripts (mentions in interactive work), directory scanning of ~/Projects on any machine the assistant can reach via SSH, and GitHub repo activity. On every run, the assistant checks all sources and updates project visibility. Projects with no signal across any source in 14+ days auto-move to stale tier. Stale means "you probably forgot about this", not dead.
+
+Deduplication during compile passes ensures that mentions of the same project across different notes and sources are rolled up into a single tracker entry.
+
+Weekly digest includes a project health section reporting which projects moved tiers and why.
 
 ---
 
@@ -421,6 +468,10 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/seed.md` - `#seed` tag protocol, compile routing, the inspo/seed distinction.
 
 `_meta/todo.md` - Todo aggregator: hash-based stable identities, checkbox persistence, completion paths.
+
+`_meta/claudecode.md` - `#claudecode` tag protocol, project brief structure, Claude Code session prompts.
+
+`_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
 
 `_meta/compile.md` - How `_compiled/*.md` files are generated from daily-note tags.
 
