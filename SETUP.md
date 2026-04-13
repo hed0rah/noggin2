@@ -21,6 +21,7 @@ _templates/
 _compiled/
 _digests/
 _maps/
+_projects/
 ```
 
 Plus these starter topic folders (I will add more later):
@@ -48,19 +49,32 @@ Hints: -> daily (default), -> Music Knowledge, -> append [[Note]], -> askclaude,
 ## 3. Create _templates/daily_template.md
 
 ```
-#Music #dailymusic 
-
-#Quote #dailyquote 
-
-#Movie #dailyfilm 
-
-#Art #dailyart 
-
-#Literature 
+#dailymusic 
+#dailyquote 
+#dailyfilm 
+#dailyart 
 
 ---
 
+## Projects
+
+
 ---
+
+## Learning
+
+
+---
+
+found: 
+
+---
+
+#todo 
+
+---
+
+
 
 ---
 ```
@@ -113,6 +127,7 @@ Tags the assistant acts on:
 - `#todo` - compiled to _compiled/todos.md with stable-hash checkboxes (protocol: _meta/todo.md)
 - `#inspo` - section captured to _compiled/inspiration.md (protocol: _meta/compile.md)
 - `#seed` - creative fragment, compiled per-topic to Topic/seeds.md (protocol: _meta/seed.md)
+- `#claudecode` - build idea for Claude Code, creates project brief (protocol: _meta/claudecode.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant never touches:
@@ -204,6 +219,24 @@ Format: each seed block gets a `> from [[source daily note]]` header in the coll
 Promotion: seeds graduate to standalone files via normal promotion workflow. Seed entry gets `> developed: [[New File]]` footer.
 
 What is NOT a seed: book recommendations (inspo), todos, reference links (inspo), finished thoughts (topic file directly).
+
+
+### _meta/claudecode.md
+
+Protocol for `#claudecode` tag. When the user drops a build idea in a daily note, the assistant creates `_projects/<slug>/brief.md` with: what/why (problem and solution), architecture (system design), implementation plan (steps), dependencies (tools, libs, prereqs), open questions, and a ready-to-paste Claude Code session prompt.
+
+The brief is structured so the user can copy it directly into a Claude Code session and start building immediately. Same footnote-marker workflow as `#askclaude`. Processing: generate brief, append `[^c-N]` to the tag line, add footnote with link to the brief.
+
+
+### _meta/projects.md
+
+Project tracker dashboard protocol. Aggregates projects from multiple signal sources into `_projects/_index.md` with five tiers: active (in development), queued (ready, waiting for bandwidth), stale (no signal in 14+ days), sparks (raw ideas), shipped (completed).
+
+Live signal sources: vault grep (daily note mentions, `#Brightidea` tags), session transcripts (mentions in interactive work), directory scanning of ~/Projects on any machine reachable via SSH, GitHub repo activity.
+
+Each project entry carries `last seen: YYYY-MM-DD` with source tag (vault/session/machine-name/github). Stale detection: projects with zero signal across all sources in 14+ days move to stale tier. Deduplication: same project mentioned across multiple notes/sources rolls up to one tracker entry.
+
+Weekly digest includes project health section reporting tier movements.
 
 
 ### _meta/todo.md
@@ -338,7 +371,7 @@ This is the bootstrap prompt that makes future Cowork sessions work automaticall
 
 - System identity ("You are the assistant for Noggin2")
 - Style rules: never use em-dashes, never use emojis, never capitalize first letter in code comments, be concise and technical, creative/free-thinking encouraged, match user voice, prose over bullets for vault content, use footnotes not strikethrough
-- Session-start protocol: grep for `#askclaude` and `#link-me`, zero matches = stop, matches = read protocol docs and process
+- Session-start protocol: grep for `#askclaude`, `#link-me`, and `#claudecode`, zero matches = stop, matches = read protocol docs and process
 - Tag vocabulary with protocol doc references for each
 - Footnote reply protocol (brief inline version)
 - Daily note rules (bare date today, topic suffix next day, append-only, no rename-and-revert)
@@ -362,6 +395,7 @@ Tell me:
 - That I should customize _meta/voice.md with my own writing style
 - That I should customize _templates/daily_template.md with my own intake tags
 - That I should add my own topic folders as I go
+- Where to check project status: `_projects/_index.md` aggregates all build ideas and work in progress
 - That the system is ready to use: just start writing daily notes and dropping tags
 
 Do NOT set up scheduled tasks. I will do that separately once I have used the system interactively for a bit.
