@@ -46,10 +46,11 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#seed` - creative fragment, compiled per-topic to `Topic/seeds.md`. Protocol: `_meta/seed.md`
 - `#claudecode` - build idea for Claude Code. Creates project brief at `_projects/<slug>/brief.md`. Protocol: `_meta/claudecode.md`
 - `#title-me` - fetch page title for a raw URL, replace with titled markdown link. Protocol: `_meta/title-me.md`
+- `#rabbithole` - deep-dive research. Creates thorough note in `_rabbitholes/`. Protocol: `_meta/rabbithole.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant never touches:
-`#rabbithole` `#deepdive` `#followup` `#Brightidea` `#todo-done` and all domain tags (#Music, #Art, #Design, #Hardware, #Literature, #philosophy, etc)
+`#deepdive` `#followup` `#Brightidea` `#todo-done` and all domain tags (#Music, #Art, #Design, #Hardware, #Literature, #philosophy, etc)
 
 ## Footnote reply protocol (brief)
 

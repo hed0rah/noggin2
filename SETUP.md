@@ -22,6 +22,7 @@ _compiled/
 _digests/
 _maps/
 _projects/
+_rabbitholes/
 ```
 
 Plus these starter topic folders (I will add more later):
@@ -135,10 +136,10 @@ Tags the assistant acts on:
 - `#seed` - creative fragment, compiled per-topic to Topic/seeds.md (protocol: _meta/seed.md)
 - `#claudecode` - build idea for Claude Code, creates project brief (protocol: _meta/claudecode.md)
 - `#title-me` - fetch page title for a raw URL, replace with titled markdown link (protocol: _meta/title-me.md)
+- `#rabbithole` - deep-dive research, creates note in _rabbitholes/ (protocol: _meta/rabbithole.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant never touches:
-- `#rabbithole` - user bookmark for things to dig into later
 - `#deepdive` - user marker next to a link that goes deep
 - `#followup` - revisit later
 - `#Brightidea` - user marker for ideas worth developing
@@ -233,6 +234,11 @@ What is NOT a seed: book recommendations (inspo), todos, reference links (inspo)
 Protocol for `#claudecode` tag. When the user drops a build idea in a daily note, the assistant creates `_projects/<slug>/brief.md` with: what/why (problem and solution), architecture (system design), implementation plan (steps), dependencies (tools, libs, prereqs), open questions, and a ready-to-paste Claude Code session prompt.
 
 The brief is structured so the user can copy it directly into a Claude Code session and start building immediately. Same footnote-marker workflow as `#askclaude`. Processing: generate brief, append `[^c-N]` to the tag line, add footnote with link to the brief.
+
+
+### _meta/rabbithole.md
+
+Protocol for `#rabbithole` tag. The assistant creates a thorough standalone research note in `_rabbitholes/` when the user drops this tag with a topic. Output is a well-researched article with sections, sources, and wikilinks back into the vault. If a note on the same topic exists, new findings are appended with a dated section header. Domain tags on the source line are for context only (all rabbitholes route to `_rabbitholes/`). The one place where verbose, link-dense output is encouraged.
 
 
 ### _meta/title-me.md

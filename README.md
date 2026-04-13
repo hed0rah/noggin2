@@ -45,6 +45,8 @@ YourVault/
     todo.md                   todo aggregator protocol
     claudecode.md             claudecode tag protocol
     projects.md               project tracker protocol
+    title-me.md               URL title fetching protocol
+    rabbithole.md             deep-dive research protocol
     decisions.md              append-only design decisions log
     future.md                 deferred ideas, not yet built
     askclaude/
@@ -64,6 +66,7 @@ YourVault/
   _maps/                      Maps of Content (hand-curated hubs)
   _projects/                  project tracker and Claude Code briefs
     _index.md                 project dashboard
+  _rabbitholes/               deep-dive research notes from #rabbithole tags
   Music Knowledge/            topic folder
   Literature/                 topic folder
   Hardware/                   topic folder
@@ -76,7 +79,7 @@ YourVault/
 
 Every topic folder contains an `_index.md` landing note that describes the folder's scope and companion tags. This file keeps the folder alive through Obsidian Sync (which tracks files, not folders), gives newcomers a landing page, and can grow into a Map of Content later.
 
-Hide from graph view: `_meta/`, `_compiled/`, `_digests/`, `_templates/`, `_inbox.md`
+Hide from graph view: `_meta/`, `_compiled/`, `_digests/`, `_templates/`, `_rabbitholes/`, `_inbox.md`
 
 ---
 
@@ -149,11 +152,11 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 
 `#title-me` - Fetch a page title for a raw URL and replace the line with a titled markdown link. Drop it next to any raw URL you pasted in a hurry. The assistant fetches the page, grabs the title, and swaps in `[Title](url)`. Tag disappears on success. If the page can't be fetched, tag stays for retry and a footnote explains why.
 
+`#rabbithole` - Deep-dive research. Drop it with a topic and the assistant creates a thorough standalone note in `_rabbitholes/` with structured research, sources, and wikilinks back into the vault. Add a domain tag for context (`#rabbithole #Hardware how CRT electron guns work`). This is the one place where verbose, link-dense output is encouraged. The assistant does the diving so you don't have to.
+
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
 ### Tags the assistant never touches
-
-`#rabbithole` - Your bookmark for things to dig into later. Greppable, not processed.
 
 `#deepdive` - Your marker next to a link that goes deep. Not a request to the assistant.
 
@@ -311,6 +314,14 @@ Ask "rename the daily notes that need topics". The assistant grabs everything ea
 ```
 
 Becomes: `[Emily Kraus - Luhring Augustine](https://www.luhringaugustine.com/exhibitions/emily-kraus)`. Works with surrounding text too (your words stay, the URL gets wrapped). If the page can't be fetched, tag stays and you get a footnote explaining why.
+
+### Go down a rabbithole
+
+```
+#rabbithole #Hardware how CRT electron guns actually work
+```
+
+The assistant creates `_rabbitholes/crt-electron-guns.md` with a thorough research piece: history, technical details, tangents, sources, and wikilinks to related vault notes. If a rabbithole note on the same topic already exists, new findings are appended with a dated section header. This is the one place where verbose output is the point.
 
 ### Kick off a Claude Code project
 
@@ -488,6 +499,8 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/claudecode.md` - `#claudecode` tag protocol, project brief structure, Claude Code session prompts.
 
 `_meta/title-me.md` - `#title-me` tag protocol, URL title fetching, failure handling.
+
+`_meta/rabbithole.md` - `#rabbithole` tag protocol, deep-dive research notes, output format.
 
 `_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
 
