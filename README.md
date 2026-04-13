@@ -96,11 +96,17 @@ Template at `_templates/daily_template.md` gets auto-filled by Obsidian's core D
 
 ## Projects
 
+- 
+- 
+- 
 
 ---
 
 ## Learning
 
+- 
+- 
+- 
 
 ---
 

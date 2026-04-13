@@ -22,7 +22,10 @@ On every session start, do this and nothing else until the user speaks:
    ```
    grep -rn --include="*.md" -E '^[[:space:]]*#askclaude([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/_compiled/'
    ```
-   Also check for `#link-me` (excluding `#link-me-done`).
+   Also check for `#link-me` (excluding `#link-me-done`) and `#claudecode`:
+   ```
+   grep -rn --include="*.md" -iE '^[[:space:]]*#claudecode([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/_projects/'
+   ```
 
 2. **Zero matches?** Stop. Do not read any _meta docs. Handle whatever the user came to do.
 
@@ -41,6 +44,7 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#todo` - compiled to `_compiled/todos.md`. Protocol: `_meta/todo.md`
 - `#inspo` - section captured to `_compiled/inspiration.md`. Protocol: `_meta/compile.md`
 - `#seed` - creative fragment, compiled per-topic to `Topic/seeds.md`. Protocol: `_meta/seed.md`
+- `#claudecode` - build idea for Claude Code. Creates project brief at `_projects/<slug>/brief.md`. Protocol: `_meta/claudecode.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant never touches:

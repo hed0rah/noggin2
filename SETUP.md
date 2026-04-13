@@ -58,11 +58,17 @@ Hints: -> daily (default), -> Music Knowledge, -> append [[Note]], -> askclaude,
 
 ## Projects
 
+- 
+- 
+- 
 
 ---
 
 ## Learning
 
+- 
+- 
+- 
 
 ---
 
