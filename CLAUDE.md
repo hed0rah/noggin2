@@ -45,6 +45,7 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#inspo` - section captured to `_compiled/inspiration.md`. Protocol: `_meta/compile.md`
 - `#seed` - creative fragment, compiled per-topic to `Topic/seeds.md`. Protocol: `_meta/seed.md`
 - `#claudecode` - build idea for Claude Code. Creates project brief at `_projects/<slug>/brief.md`. Protocol: `_meta/claudecode.md`
+- `#title-me` - fetch page title for a raw URL, replace with titled markdown link. Protocol: `_meta/title-me.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant never touches:

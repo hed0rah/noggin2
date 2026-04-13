@@ -147,6 +147,8 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 
 `#claudecode` - Drop a build idea for a Claude Code project. The assistant creates `_projects/<slug>/brief.md` with a structured project plan ready to copy directly into a Claude Code session. Same footnote-marker workflow as `#askclaude`.
 
+`#title-me` - Fetch a page title for a raw URL and replace the line with a titled markdown link. Drop it next to any raw URL you pasted in a hurry. The assistant fetches the page, grabs the title, and swaps in `[Title](url)`. Tag disappears on success. If the page can't be fetched, tag stays for retry and a footnote explains why.
+
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
 ### Tags the assistant never touches
@@ -301,6 +303,14 @@ Auto-generated Sunday morning at `_digests/YYYY-Wxx.md`. Summary of the week's d
 ### Rename old daily notes
 
 Ask "rename the daily notes that need topics". The assistant grabs everything earlier than today, picks topics (most memorable/unusual thing), updates any internal wikilinks first, then renames. Current day is never touched.
+
+### Title a raw URL
+
+```
+#title-me https://www.luhringaugustine.com/exhibitions/emily-kraus
+```
+
+Becomes: `[Emily Kraus - Luhring Augustine](https://www.luhringaugustine.com/exhibitions/emily-kraus)`. Works with surrounding text too (your words stay, the URL gets wrapped). If the page can't be fetched, tag stays and you get a footnote explaining why.
 
 ### Kick off a Claude Code project
 
@@ -476,6 +486,8 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/todo.md` - Todo aggregator: hash-based stable identities, checkbox persistence, completion paths.
 
 `_meta/claudecode.md` - `#claudecode` tag protocol, project brief structure, Claude Code session prompts.
+
+`_meta/title-me.md` - `#title-me` tag protocol, URL title fetching, failure handling.
 
 `_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
 

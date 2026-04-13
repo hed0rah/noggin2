@@ -134,6 +134,7 @@ Tags the assistant acts on:
 - `#inspo` - section captured to _compiled/inspiration.md (protocol: _meta/compile.md)
 - `#seed` - creative fragment, compiled per-topic to Topic/seeds.md (protocol: _meta/seed.md)
 - `#claudecode` - build idea for Claude Code, creates project brief (protocol: _meta/claudecode.md)
+- `#title-me` - fetch page title for a raw URL, replace with titled markdown link (protocol: _meta/title-me.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant never touches:
@@ -232,6 +233,11 @@ What is NOT a seed: book recommendations (inspo), todos, reference links (inspo)
 Protocol for `#claudecode` tag. When the user drops a build idea in a daily note, the assistant creates `_projects/<slug>/brief.md` with: what/why (problem and solution), architecture (system design), implementation plan (steps), dependencies (tools, libs, prereqs), open questions, and a ready-to-paste Claude Code session prompt.
 
 The brief is structured so the user can copy it directly into a Claude Code session and start building immediately. Same footnote-marker workflow as `#askclaude`. Processing: generate brief, append `[^c-N]` to the tag line, add footnote with link to the brief.
+
+
+### _meta/title-me.md
+
+Protocol for `#title-me` tag. Fetches page title for a raw URL and replaces the line with a titled markdown link (`[Title](url)`). Tag disappears on success. On failure (page unreachable, JS-heavy site, login wall), tag stays for retry and a footnote explains why. One fetch attempt only for hard-to-scrape sites. Never invent titles. Preserves any user text on the line, only the URL gets wrapped.
 
 
 ### _meta/projects.md
