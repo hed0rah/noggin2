@@ -47,6 +47,8 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#claudecode` - build idea for Claude Code. Creates project brief at `_projects/<slug>/brief.md`. Protocol: `_meta/claudecode.md`
 - `#title-me` - fetch page title for a raw URL, replace with titled markdown link. Protocol: `_meta/title-me.md`
 - `#rabbithole` - deep-dive research. Creates thorough note in `_rabbitholes/`. Protocol: `_meta/rabbithole.md`
+- `#tobuy` - wishlist item, compiled to `_compiled/tobuy.md` as a living list. Protocol: `_meta/tobuy.md`
+- `#shopping` - recurring shopping (groceries, consumables), compiled to `_compiled/shopping.md` weekly rolling. Protocol: `_meta/shopping.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant never touches:

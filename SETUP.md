@@ -108,6 +108,8 @@ _compiled/quotes.md
 _compiled/art.md
 _compiled/inspiration.md
 _compiled/todos.md
+_compiled/tobuy.md
+_compiled/shopping.md
 ```
 
 Each one gets a one-line header comment explaining what it is and that it is auto-generated.
@@ -137,6 +139,8 @@ Tags the assistant acts on:
 - `#claudecode` - build idea for Claude Code, creates project brief (protocol: _meta/claudecode.md)
 - `#title-me` - fetch page title for a raw URL, replace with titled markdown link (protocol: _meta/title-me.md)
 - `#rabbithole` - deep-dive research, creates note in _rabbitholes/ (protocol: _meta/rabbithole.md)
+- `#tobuy` - wishlist (unique aspirational items), compiled to _compiled/tobuy.md (protocol: _meta/tobuy.md)
+- `#shopping` - recurring purchases, compiled to _compiled/shopping.md weekly rolling (protocol: _meta/shopping.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant never touches:
@@ -234,6 +238,16 @@ What is NOT a seed: book recommendations (inspo), todos, reference links (inspo)
 Protocol for `#claudecode` tag. When the user drops a build idea in a daily note, the assistant creates `_projects/<slug>/brief.md` with: what/why (problem and solution), architecture (system design), implementation plan (steps), dependencies (tools, libs, prereqs), open questions, and a ready-to-paste Claude Code session prompt.
 
 The brief is structured so the user can copy it directly into a Claude Code session and start building immediately. Same footnote-marker workflow as `#askclaude`. Processing: generate brief, append `[^c-N]` to the tag line, add footnote with link to the brief.
+
+
+### _meta/tobuy.md
+
+Protocol for `#tobuy` tag. Wishlist for unique, bigger, one-off items (rare gear, weird objects, curiosities). Compiles to `_compiled/tobuy.md` as a single living list, alphabetical, with stable hash identities (`^tobuy-XXXXXX`) so check state survives regeneration. Items captured from the `#tobuy` line down to the next `---` or next tag-prefixed line. Two completion paths: check box in collector, or add `#tobuy-done` to source line. Image embeds in source stay in source (not duplicated to the list). URLs on continuation lines roll up as parentheticals in the list entry.
+
+
+### _meta/shopping.md
+
+Protocol for `#shopping` tag. Recurring purchases (groceries, household, consumables). Compiles to `_compiled/shopping.md` as a weekly rolling list with three sections: this week, carried over (unchecked from previous weeks), and completed this week. Monday rollover: unchecked items move to "carried over", checked items archive to `_compiled/shopping/YYYY-Wxx.md`. Stable hashes (`^shop-XXXXXX`) preserve check state. Comma-separated items on one line become separate entries each with their own hash. Co-occurring domain tags preserved as suffix.
 
 
 ### _meta/rabbithole.md

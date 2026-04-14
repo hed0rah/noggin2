@@ -47,6 +47,8 @@ YourVault/
     projects.md               project tracker protocol
     title-me.md               URL title fetching protocol
     rabbithole.md             deep-dive research protocol
+    tobuy.md                  wishlist compile protocol
+    shopping.md               shopping list compile protocol
     decisions.md              append-only design decisions log
     future.md                 deferred ideas, not yet built
     askclaude/
@@ -62,6 +64,8 @@ YourVault/
     art.md                    all #dailyart entries
     inspiration.md            all #inspo sections
     todos.md                  living checkbox list from #todo tags
+    tobuy.md                  wishlist compiled from #tobuy tags
+    shopping.md               weekly shopping list from #shopping tags
   _digests/                   weekly digests (YYYY-Wxx.md)
   _maps/                      Maps of Content (hand-curated hubs)
   _projects/                  project tracker and Claude Code briefs
@@ -153,6 +157,10 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 `#title-me` - Fetch a page title for a raw URL and replace the line with a titled markdown link. Drop it next to any raw URL you pasted in a hurry. The assistant fetches the page, grabs the title, and swaps in `[Title](url)`. Tag disappears on success. If the page can't be fetched, tag stays for retry and a footnote explains why.
 
 `#rabbithole` - Deep-dive research. Drop it with a topic and the assistant creates a thorough standalone note in `_rabbitholes/` with structured research, sources, and wikilinks back into the vault. Add a domain tag for context (`#rabbithole #Hardware how CRT electron guns work`). This is the one place where verbose, link-dense output is encouraged. The assistant does the diving so you don't have to.
+
+`#tobuy` - Wishlist for unique, bigger, one-off items (rare gear, weird objects, curiosities). Compiles to `_compiled/tobuy.md` as a single living checkbox list with stable hash identities (so check state survives regeneration). Check the box when acquired, or add `#tobuy-done` to the source line to archive.
+
+`#shopping` - Recurring purchases (groceries, household, consumables). Compiles to `_compiled/shopping.md` as a weekly rolling list. Items from the current week show at top, unchecked items from previous weeks carry over, checked items archive on Monday rollover. Same stable-hash pattern as `#tobuy`.
 
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
@@ -314,6 +322,15 @@ Ask "rename the daily notes that need topics". The assistant grabs everything ea
 ```
 
 Becomes: `[Emily Kraus - Luhring Augustine](https://www.luhringaugustine.com/exhibitions/emily-kraus)`. Works with surrounding text too (your words stay, the URL gets wrapped). If the page can't be fetched, tag stays and you get a footnote explaining why.
+
+### Capture something to buy
+
+```
+#tobuy Chinese pickling jar with water moat seal
+#shopping olive oil, coffee filters
+```
+
+`#tobuy` is for wishlist (unique, rare, aspirational, one-off). Compiles to `_compiled/tobuy.md` as a living list. `#shopping` is for recurring purchases (groceries, household). Compiles to `_compiled/shopping.md` as a weekly rolling list with Monday rollover. Both use stable-hash checkboxes that persist across regenerations. Check the box when acquired/bought, or add `-done` suffix to the source tag.
 
 ### Go down a rabbithole
 
@@ -501,6 +518,10 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/title-me.md` - `#title-me` tag protocol, URL title fetching, failure handling.
 
 `_meta/rabbithole.md` - `#rabbithole` tag protocol, deep-dive research notes, output format.
+
+`_meta/tobuy.md` - `#tobuy` wishlist compile protocol, single living list, stable hashes.
+
+`_meta/shopping.md` - `#shopping` weekly rolling list protocol, Monday rollover, archive rules.
 
 `_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
 
