@@ -64,6 +64,7 @@ Daily notes are append-only. Claude never rewrites the body. Its edits are limit
 | `#shopping` | Recurring shopping (groceries, consumables). Compiled to `_compiled/shopping.md`. Check the box when bought, or add `#shopping-done` to archive |
 | `#plex` | Query your Plex library via natural language. Claude searches, pulls metadata, downloads posters, exports lists. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp) |
 | `#code` | Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo |
+| `#spot` | Query Spotify via natural language. Resolve tracks/albums, fetch album art, pull metadata. Primary use: compose with `#dailymusic` to auto-fill Spotify links. Tag disappears on success. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp) |
 | `#dailymusic` | Line compiled into `_compiled/music.md` |
 | `#dailyfilm` | Line compiled into `_compiled/film.md` |
 | `#dailyquote` | Line compiled into `_compiled/quotes.md` |
@@ -206,6 +207,15 @@ Claude creates `_projects/discogs-mcp/brief.md` with: what/why, architecture, im
 ```
 
 Claude scrapes the repo metadata (name, description, primary language), replaces the line with a titled link (tag disappears), and appends the entry to `Programming/{Language}.md`. Without a URL, the tag just marks a code idea. 60 repos already filed across 12 languages from the initial vault sweep.
+
+### Auto-fill a daily music entry from Spotify
+
+```
+#dailymusic Tim Exile - #spot what album was I listening to earlier
+#dailymusic #spot Hedex & Ray Volpe - new collab. pull album art and link
+```
+
+Claude resolves the query via Spotify (search, recently played, artist discography), rewrites the line with a titled Spotify link, saves album art to the vault if requested, and removes the `#spot` tag. The `#dailymusic` tag stays for compilation. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp).
 
 ### Query your Plex library
 

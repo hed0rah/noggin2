@@ -145,6 +145,7 @@ Tags the assistant acts on:
 - `#shopping` - recurring purchases, compiled to _compiled/shopping.md weekly rolling (protocol: _meta/shopping.md)
 - `#plex` - query Plex library via natural language, returns metadata/posters/lists via footnote (protocol: _meta/plex.md). Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp)
 - `#code` - programming tool/repo capture. With URL: scrape metadata, file to Programming/{Language}.md. Without URL: treat as idea/todo (protocol: _meta/code.md)
+- `#spot` - query Spotify via natural language. Resolve tracks/albums, fetch album art. Primary use: compose with `#dailymusic` to auto-fill Spotify links. Tag disappears on success. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp) (protocol: _meta/spot.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant owns:
@@ -410,7 +411,7 @@ This is the bootstrap prompt that makes future Cowork sessions work automaticall
 
 - System identity ("You are the assistant for Noggin2")
 - Style rules: never use em-dashes, never use emojis, never capitalize first letter in code comments, be concise and technical, creative/free-thinking encouraged, match user voice, prose over bullets for vault content, use footnotes not strikethrough
-- Session-start protocol: grep for `#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`. Zero matches = skip to writing `#claudespeaks`. Matches = read protocol docs and process. Always write `#claudespeaks` if section is empty
+- Session-start protocol: grep for `#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`, `#spot`. Zero matches = skip to writing `#claudespeaks`. Matches = read protocol docs and process. Always write `#claudespeaks` if section is empty
 - Tag vocabulary with protocol doc references for each
 - Footnote reply protocol (brief inline version)
 - Daily note rules (bare date today, topic suffix next day, append-only, no rename-and-revert)

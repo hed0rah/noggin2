@@ -174,6 +174,8 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 
 `#code` - Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo.
 
+`#spot` - Query Spotify via natural language. The assistant searches, resolves track/album metadata, fetches album art, and rewrites the source line with a titled Spotify link. Primary use case is composing with `#dailymusic`: write `#dailymusic Artist - #spot track name` and the assistant auto-fills the Spotify link, removing the `#spot` tag on success. Can also use the recently-played API to identify what you were listening to earlier. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp).
+
 ### Tags the assistant owns
 
 `#claudespeaks` - The assistant's daily thought, written into the `## claudespeaks` section of today's daily note during scheduled run or session start. One block per day, one focus, no preamble. Can be anything: a music recommendation, a historical connection, a half-formed idea, a question back to you, a link, a provocation. Should draw on recent vault activity and your interests. Never filler. Leave it empty rather than force something.
@@ -346,6 +348,15 @@ Becomes: `[Emily Kraus - Luhring Augustine](https://www.luhringaugustine.com/exh
 
 `#tobuy` is for wishlist (unique, rare, aspirational, one-off). Compiles to `_compiled/tobuy.md` as a living list. `#shopping` is for recurring purchases (groceries, household). Compiles to `_compiled/shopping.md` as a weekly rolling list with Monday rollover. Both use stable-hash checkboxes that persist across regenerations. Check the box when acquired/bought, or add `-done` suffix to the source tag.
 
+### Auto-fill daily music from Spotify
+
+```
+#dailymusic Tim Exile - #spot what album was I listening to earlier
+#dailymusic #spot Hedex & Ray Volpe - new collab. pull album art
+```
+
+The `#spot` tag composes with `#dailymusic`. The assistant resolves the query via Spotify (search, recently-played history, artist discography), rewrites the line with a titled Spotify link, saves album art to the vault if requested, and removes the `#spot` tag. The `#dailymusic` tag stays for compilation. Can also be used standalone for any Spotify query. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp).
+
 ### Go down a rabbithole
 
 ```
@@ -471,7 +482,7 @@ All core plugins, zero community plugins.
 
 The assistant runs in two contexts:
 
-**Interactive session.** When you open a session, the assistant does a cheap check: grep for pending tags (`#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`). Zero matches means it skips to writing `#claudespeaks` (if the section is empty) and then handles whatever you came to do. Tags found means it reads the relevant protocol doc lazily, processes the tags, writes `#claudespeaks`, and briefly reports what was done.
+**Interactive session.** When you open a session, the assistant does a cheap check: grep for pending tags (`#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`, `#spot`). Zero matches means it skips to writing `#claudespeaks` (if the section is empty) and then handles whatever you came to do. Tags found means it reads the relevant protocol doc lazily, processes the tags, writes `#claudespeaks`, and briefly reports what was done.
 
 **Scheduled run.** A daily task at 6AM local time runs the same grep-first protocol. Processes `_inbox.md` first, then tags. Zero pending tags means it skips straight to `#claudespeaks`. The assistant always writes `#claudespeaks` in today's daily note if the section is empty (this runs even on zero-tag days). Results are logged to `_meta/askclaude/log/rolling.md`. A separate Sunday morning task generates the weekly digest.
 
@@ -542,6 +553,8 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/plex.md` - `#plex` tag protocol, Plex library queries via [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
 
 `_meta/code.md` - `#code` tag protocol, repo metadata scraping, `Programming/{Language}.md` filing.
+
+`_meta/spot.md` - `#spot` tag protocol, Spotify queries via [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp), `#dailymusic` composition.
 
 `_meta/claudespeaks.md` - `#claudespeaks` protocol, daily assistant thought, quality rules.
 

@@ -29,6 +29,7 @@ On every session start, do this and nothing else until the user speaks:
    grep -rn --include="*.md" -iE '^[[:space:]]*#rabbithole' <vault> | grep -v '/_meta/' | grep -v '/_rabbitholes/'
    grep -rn --include="*.md" -iE '^[[:space:]]*#plex([^-]|$)' <vault> | grep -v '/_meta/'
    grep -rn --include="*.md" -iE '^[[:space:]]*#code([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/Programming/'
+   grep -rn --include="*.md" -iE '#spot([^-]|$)' <vault> | grep -v '/_meta/'
    ```
 
 2. **Zero matches?** Skip to step 4.
@@ -57,6 +58,7 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#shopping` - recurring shopping (groceries, consumables), compiled to `_compiled/shopping.md`. Protocol: `_meta/shopping.md`
 - `#plex` - query Plex Media Server via plex-usher MCP. Natural language, returns metadata/images/lists via footnote. Protocol: `_meta/plex.md`
 - `#code` - programming tool/repo capture. With URL: scrape metadata, file to `Programming/{Language}.md`. Without URL: treat as idea/todo. Protocol: `_meta/code.md`
+- `#spot` - query Spotify via natural language. Resolve tracks/albums, fetch album art, pull metadata. Primary use: auto-fill `#dailymusic` lines with Spotify links. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp). Protocol: `_meta/spot.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant owns (writes content into, user does not process):
