@@ -57,30 +57,32 @@ Hints: -> daily (default), -> Music Knowledge, -> append [[Note]], -> askclaude,
 
 ---
 
-## Projects
+## claudespeaks
 
-- 
-- 
-- 
 
 ---
 
-## Learning
+## projects
 
-- 
-- 
-- 
 
 ---
 
-found: 
+## links
+
 
 ---
 
-#todo 
+## inspo
+
 
 ---
 
+## ideas
+
+
+---
+
+## dump
 
 
 ---
@@ -141,7 +143,12 @@ Tags the assistant acts on:
 - `#rabbithole` - deep-dive research, creates note in _rabbitholes/ (protocol: _meta/rabbithole.md)
 - `#tobuy` - wishlist (unique aspirational items), compiled to _compiled/tobuy.md (protocol: _meta/tobuy.md)
 - `#shopping` - recurring purchases, compiled to _compiled/shopping.md weekly rolling (protocol: _meta/shopping.md)
+- `#plex` - query Plex library via natural language, returns metadata/posters/lists via footnote (protocol: _meta/plex.md). Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp)
+- `#code` - programming tool/repo capture. With URL: scrape metadata, file to Programming/{Language}.md. Without URL: treat as idea/todo (protocol: _meta/code.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
+
+Tags the assistant owns:
+- `#claudespeaks` - daily thought, recommendation, question, or idea from the assistant. Written into `## claudespeaks` section of today's daily note. One block per day, no preamble. Protocol: _meta/claudespeaks.md
 
 Tags the assistant never touches:
 - `#deepdive` - user marker next to a link that goes deep
@@ -403,7 +410,7 @@ This is the bootstrap prompt that makes future Cowork sessions work automaticall
 
 - System identity ("You are the assistant for Noggin2")
 - Style rules: never use em-dashes, never use emojis, never capitalize first letter in code comments, be concise and technical, creative/free-thinking encouraged, match user voice, prose over bullets for vault content, use footnotes not strikethrough
-- Session-start protocol: grep for `#askclaude`, `#link-me`, and `#claudecode`, zero matches = stop, matches = read protocol docs and process
+- Session-start protocol: grep for `#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`. Zero matches = skip to writing `#claudespeaks`. Matches = read protocol docs and process. Always write `#claudespeaks` if section is empty
 - Tag vocabulary with protocol doc references for each
 - Footnote reply protocol (brief inline version)
 - Daily note rules (bare date today, topic suffix next day, append-only, no rename-and-revert)
@@ -412,7 +419,7 @@ This is the bootstrap prompt that makes future Cowork sessions work automaticall
 - Screenshot handling (OCR ok, handwritten stays unless told otherwise)
 - Weekly digest (Sunday morning)
 - Inbox routing
-- Scheduled run behavior (6AM daily, grep-first, early-exit)
+- Scheduled run behavior (6AM daily, grep-first, always write `#claudespeaks` even on zero-tag days)
 - Key reference files list
 
 The CLAUDE.md should reference the _meta/ docs by path so the assistant can lazy-load them. Token conservation: do not read all docs on startup, only when there is actual work.

@@ -71,12 +71,16 @@ YourVault/
   _projects/                  project tracker and Claude Code briefs
     _index.md                 project dashboard
   _rabbitholes/               deep-dive research notes from #rabbithole tags
-  Music Knowledge/            topic folder
+  Music Knowledge/            topic folder (playlists, theory, instruments)
+  Movies/                     topic folder (letterboxd, anime, plex exports)
+  Skateboarding/              topic folder (creative skaters, off-road, playlists)
+  Design/                     topic folder (typography, logo, print and layout)
   Literature/                 topic folder
   Hardware/                   topic folder
-  Design/                     topic folder
   Ai/                         topic folder
   Video Games/                topic folder
+  Programming/                topic folder (tools/repos by language, auto-filed by #code)
+  Cartography_Maps/           topic folder
   Sculpture_Architecture/     topic folder
   ...                         add your own
 ```
@@ -101,38 +105,40 @@ Template at `_templates/daily_template.md` gets auto-filled by Obsidian's core D
 
 ---
 
-## Projects
+## claudespeaks
 
-- 
-- 
-- 
 
 ---
 
-## Learning
+## projects
 
-- 
-- 
-- 
 
 ---
 
-found: 
+## links
+
 
 ---
 
-#todo 
+## inspo
+
 
 ---
 
+## ideas
+
+
+---
+
+## dump
 
 
 ---
 ```
 
-The daily intake tags at the top force you to ingest something interesting every day, starting with music as the lowest friction entry point. `## Projects` and `## Learning` are heading prompts that get you thinking about what you touched and what you absorbed, without requiring any particular format. "found" is an absolute lowest capture bar for anything worth noting. Pre-loaded `#todo` section for tasks. The blank zone at the end is for freeform dump. Adapt the template to your own habits.
+The daily intake tags at the top force you to ingest something interesting every day, starting with music as the lowest friction entry point. `## claudespeaks` is where the assistant writes its daily thought (see below). The remaining sections are zones, not walls: `## projects` for active build work, `## links` for repos, articles, tools, references, `## inspo` for visual/design inspiration and images, `## ideas` for bright ideas, seeds, questions, speculative stuff, `## dump` for everything else. If you are in a hurry, throw everything in dump. Adapt to your own habits.
 
-Daily notes are append-only. The assistant never rewrites the body. Its edits are limited to appending footnote markers (`[^c-1]`) and definitions in a `## footnotes` section at the bottom, or adding a small `> promoted: [[Target]]` footer when material gets lifted into a topic folder.
+Daily notes are append-only. The assistant never rewrites the body. Its edits are limited to appending footnote markers (`[^c-1]`) and definitions in a `## footnotes` section at the bottom, writing the `#claudespeaks` block during scheduled run, or adding a small `> promoted: [[Target]]` footer when material gets lifted into a topic folder.
 
 ---
 
@@ -163,6 +169,14 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 `#shopping` - Recurring purchases (groceries, household, consumables). Compiles to `_compiled/shopping.md` as a weekly rolling list. Items from the current week show at top, unchecked items from previous weeks carry over, checked items archive on Monday rollover. Same stable-hash pattern as `#tobuy`.
 
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
+
+`#plex` - Query your Plex Media Server via natural language. The assistant searches, pulls metadata, downloads posters, exports lists. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
+
+`#code` - Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo.
+
+### Tags the assistant owns
+
+`#claudespeaks` - The assistant's daily thought, written into the `## claudespeaks` section of today's daily note during scheduled run or session start. One block per day, one focus, no preamble. Can be anything: a music recommendation, a historical connection, a half-formed idea, a question back to you, a link, a provocation. Should draw on recent vault activity and your interests. Never filler. Leave it empty rather than force something.
 
 ### Tags the assistant never touches
 
@@ -426,7 +440,7 @@ The assistant never autonomously creates MOCs. They represent your editorial jud
 ## Rules
 
 1. Today's daily note is never renamed. Topic suffix gets added the next day or later.
-2. Daily notes are never rewritten. The assistant's edits are surgical (footnotes only).
+2. Daily notes are never rewritten. The assistant's edits are surgical (footnotes, `#claudespeaks`, and `> promoted:` footers only).
 3. Promotion to topic folders is always user-requested, never automatic.
 4. Compiled files are caches. Regenerate from scratch. Never hand-edit (except checkbox state in todos).
 5. `#daily*` tags are paired with base tags, not replacing them. Both stay.
@@ -457,9 +471,9 @@ All core plugins, zero community plugins.
 
 The assistant runs in two contexts:
 
-**Interactive session.** When you open a session, the assistant does a cheap check: grep for pending `#askclaude` and `#link-me` tags. Zero matches means it stops the routine and handles whatever you came to do. Tags found means it reads the relevant protocol doc lazily (only when there is actual work), processes the tags, and briefly reports what was done.
+**Interactive session.** When you open a session, the assistant does a cheap check: grep for pending tags (`#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`). Zero matches means it skips to writing `#claudespeaks` (if the section is empty) and then handles whatever you came to do. Tags found means it reads the relevant protocol doc lazily, processes the tags, writes `#claudespeaks`, and briefly reports what was done.
 
-**Scheduled run.** A daily task at 6AM local time runs the same grep-first protocol. On zero-work days it does one grep and one log-append and exits. On days with work, it reads the protocol docs, processes tags, and logs results to `_meta/askclaude/log/rolling.md`. A separate Sunday morning task generates the weekly digest.
+**Scheduled run.** A daily task at 6AM local time runs the same grep-first protocol. Processes `_inbox.md` first, then tags. Zero pending tags means it skips straight to `#claudespeaks`. The assistant always writes `#claudespeaks` in today's daily note if the section is empty (this runs even on zero-tag days). Results are logged to `_meta/askclaude/log/rolling.md`. A separate Sunday morning task generates the weekly digest.
 
 Token usage is a design constraint. The processing logic lives in `_meta/askclaude/README.md` so the high-level README can be skipped on most runs. `voice.md` is only loaded when the assistant is actually composing new content.
 
@@ -524,6 +538,12 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/shopping.md` - `#shopping` weekly rolling list protocol, Monday rollover, archive rules.
 
 `_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
+
+`_meta/plex.md` - `#plex` tag protocol, Plex library queries via [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
+
+`_meta/code.md` - `#code` tag protocol, repo metadata scraping, `Programming/{Language}.md` filing.
+
+`_meta/claudespeaks.md` - `#claudespeaks` protocol, daily assistant thought, quality rules.
 
 `_meta/compile.md` - How `_compiled/*.md` files are generated from daily-note tags.
 

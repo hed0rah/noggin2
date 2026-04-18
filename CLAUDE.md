@@ -22,16 +22,22 @@ On every session start, do this and nothing else until the user speaks:
    ```
    grep -rn --include="*.md" -E '^[[:space:]]*#askclaude([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/_compiled/'
    ```
-   Also check for `#link-me` (excluding `#link-me-done`) and `#claudecode`:
+   Also check for `#link-me` (excluding `#link-me-done`), `#claudecode`, and `#title-me`:
    ```
    grep -rn --include="*.md" -iE '^[[:space:]]*#claudecode([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/_projects/'
+   grep -rn --include="*.md" -iE '^[[:space:]]*#title-me' <vault> | grep -v '/_meta/'
+   grep -rn --include="*.md" -iE '^[[:space:]]*#rabbithole' <vault> | grep -v '/_meta/' | grep -v '/_rabbitholes/'
+   grep -rn --include="*.md" -iE '^[[:space:]]*#plex([^-]|$)' <vault> | grep -v '/_meta/'
+   grep -rn --include="*.md" -iE '^[[:space:]]*#code([^-]|$)' <vault> | grep -v '/_meta/' | grep -v '/Programming/'
    ```
 
-2. **Zero matches?** Stop. Do not read any _meta docs. Handle whatever the user came to do.
+2. **Zero matches?** Skip to step 4.
 
-3. **Matches found?** Read `_meta/askclaude/README.md` for the processing protocol and `_meta/voice.md` for style. Process each tag per protocol. Briefly report what was done.
+3. **Matches found?** Read `_meta/askclaude/README.md` for the processing protocol and `_meta/voice.md` for style. Process each tag per protocol.
 
-4. **If the user has a specific request in their first message**, handle that first. Mention pending tags but do not hijack.
+4. **Write `#claudespeaks`** if today's daily note exists and the `## claudespeaks` section is empty. Read `_meta/claudespeaks.md` for protocol. If the section heading doesn't exist, create it after the intake tags.
+
+5. **Report briefly**: what tags were processed (if any), what claudespeaks was about (one line). If the user has a specific request in their first message, handle that first and mention pending work rather than hijacking.
 
 Token usage is a design constraint. The _meta/ docs are only loaded when there is actual work that requires them.
 
@@ -46,10 +52,15 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#seed` - creative fragment, compiled per-topic to `Topic/seeds.md`. Protocol: `_meta/seed.md`
 - `#claudecode` - build idea for Claude Code. Creates project brief at `_projects/<slug>/brief.md`. Protocol: `_meta/claudecode.md`
 - `#title-me` - fetch page title for a raw URL, replace with titled markdown link. Protocol: `_meta/title-me.md`
-- `#rabbithole` - deep-dive research. Creates thorough note in `_rabbitholes/`. Protocol: `_meta/rabbithole.md`
+- `#rabbithole` - deep-dive research. Creates a thorough note in `_rabbitholes/`. Protocol: `_meta/rabbithole.md`
 - `#tobuy` - wishlist item, compiled to `_compiled/tobuy.md` as a living list. Protocol: `_meta/tobuy.md`
-- `#shopping` - recurring shopping (groceries, consumables), compiled to `_compiled/shopping.md` weekly rolling. Protocol: `_meta/shopping.md`
+- `#shopping` - recurring shopping (groceries, consumables), compiled to `_compiled/shopping.md`. Protocol: `_meta/shopping.md`
+- `#plex` - query Plex Media Server via plex-usher MCP. Natural language, returns metadata/images/lists via footnote. Protocol: `_meta/plex.md`
+- `#code` - programming tool/repo capture. With URL: scrape metadata, file to `Programming/{Language}.md`. Without URL: treat as idea/todo. Protocol: `_meta/code.md`
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
+
+Tags the assistant owns (writes content into, user does not process):
+- `#claudespeaks` - daily thought, recommendation, question, or idea from the assistant. Written into the `## claudespeaks` section of today's daily note during scheduled run or session start. One block per day, no preamble. Can be anything: music rec, historical connection, half-formed idea, question back to the user, a link, a provocation. Should draw on recent vault activity and the user's interests. Never filler.
 
 Tags the assistant never touches:
 `#deepdive` `#followup` `#Brightidea` `#todo-done` and all domain tags (#Music, #Art, #Design, #Hardware, #Literature, #philosophy, etc)
@@ -69,7 +80,7 @@ Full protocol with all six footnote prefixes: `_meta/footnotes.md`
 
 - Today's note is always bare `YYYY-MM-DD.md`. Never rename the current day
 - Topic suffix (2-4 lowercase words, most memorable thing) added the next day or later. Protocol: `_meta/rename.md`
-- Daily notes are append-only. The assistant only adds footnote markers and `> promoted:` footers
+- Daily notes are append-only. The assistant only adds footnote markers, `> promoted:` footers, and `#claudespeaks` content
 - Never edit a past line. Add a dated footnote `[^YYYY-MM-DD-slug]` instead
 - Never do a rename-and-revert on the same file in one session (virtiofs cache desync risk)
 
@@ -108,4 +119,4 @@ Sunday morning, generated at `_digests/YYYY-Wxx.md`. Summarizes the week. Protoc
 
 ## Scheduled run (6AM daily)
 
-Grep-first. Zero work = one grep + one log append to `_meta/askclaude/log/rolling.md`. Process `_inbox.md` first, then tags. Early-exit on zero work. Do not load docs unnecessarily.
+Grep-first. Process `_inbox.md` first, then tags. Zero pending tags = skip straight to `#claudespeaks`. Always write `#claudespeaks` in today's daily note if the section is empty (this runs even on zero-tag days). Log results to `_meta/askclaude/log/rolling.md`. Do not load protocol docs unnecessarily. `#claudespeaks` protocol: `_meta/claudespeaks.md`
