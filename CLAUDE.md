@@ -59,13 +59,17 @@ Tags the assistant acts on (read the relevant _meta/ doc before processing):
 - `#plex` - query Plex Media Server via plex-usher MCP. Natural language, returns metadata/images/lists via footnote. Protocol: `_meta/plex.md`
 - `#code` - programming tool/repo capture. With URL: scrape metadata, file to `Programming/{Language}.md`. Without URL: treat as idea/todo. Protocol: `_meta/code.md`
 - `#spot` - query Spotify via natural language. Resolve tracks/albums, fetch album art, pull metadata. Primary use: auto-fill `#dailymusic` lines with Spotify links. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp). Protocol: `_meta/spot.md`
-- `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
+- `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - line compiled to `_compiled/*.md`. Protocol: `_meta/compile.md`
 
 Tags the assistant owns (writes content into, user does not process):
 - `#claudespeaks` - daily thought, recommendation, question, or idea from the assistant. Written into the `## claudespeaks` section of today's daily note during scheduled run or session start. One block per day, no preamble. Can be anything: music rec, historical connection, half-formed idea, question back to the user, a link, a provocation. Should draw on recent vault activity and the user's interests. Never filler.
 
 Tags the assistant never touches:
 `#deepdive` `#followup` `#Brightidea` `#todo-done` and all domain tags (#Music, #Art, #Design, #Hardware, #Literature, #philosophy, etc)
+
+## Tag incubator
+
+`_meta/tag-incubator.md` is a living document where the assistant logs unrecognized tags encountered during processing. When a tag appears frequently or across multiple notes, it becomes a candidate for promotion to a full protocol tag. The assistant should check for and log unknown tags during any processing pass (daily notes, inbox routing, tag sweeps). No tag is too informal to track.
 
 ## Footnote reply protocol (brief)
 
@@ -117,6 +121,7 @@ Sunday morning, generated at `_digests/YYYY-Wxx.md`. Summarizes the week. Protoc
 - `_meta/decisions.md` - why the rules are the way they are (append-only)
 - `_meta/voice.md` - user writing style observations (living document)
 - `_meta/future.md` - deferred ideas not yet built
+- `_meta/tag-incubator.md` - living log of unrecognized tags, candidates for promotion
 - `CHEATSHEET.md` - user-facing quick reference at vault root
 
 ## Scheduled run (6AM daily)

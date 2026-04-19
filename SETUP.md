@@ -54,6 +54,8 @@ Hints: -> daily (default), -> Music Knowledge, -> append [[Note]], -> askclaude,
 #dailyquote 
 #dailyfilm 
 #dailyart 
+#dailymeme 
+#dailygame 
 
 ---
 
@@ -146,7 +148,7 @@ Tags the assistant acts on:
 - `#plex` - query Plex library via natural language, returns metadata/posters/lists via footnote (protocol: _meta/plex.md). Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp)
 - `#code` - programming tool/repo capture. With URL: scrape metadata, file to Programming/{Language}.md. Without URL: treat as idea/todo (protocol: _meta/code.md)
 - `#spot` - query Spotify via natural language. Resolve tracks/albums, fetch album art. Primary use: compose with `#dailymusic` to auto-fill Spotify links. Tag disappears on success. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp) (protocol: _meta/spot.md)
-- `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
+- `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - line compiled to _compiled/*.md (protocol: _meta/compile.md)
 
 Tags the assistant owns:
 - `#claudespeaks` - daily thought, recommendation, question, or idea from the assistant. Written into `## claudespeaks` section of today's daily note. One block per day, no preamble. Protocol: _meta/claudespeaks.md
@@ -157,6 +159,8 @@ Tags the assistant never touches:
 - `#Brightidea` - user marker for ideas worth developing
 - `#todo-done` - user signal that a todo is closed
 - All domain tags (#Music, #Art, #Design, #Hardware, #Literature, etc) are user-only
+
+Tag incubator: create `_meta/tag-incubator.md` as a living document where you log unrecognized tags encountered during processing. When a tag appears frequently or across multiple notes, it becomes a candidate for promotion to a full protocol tag. No tag is too informal to track.
 
 Footnote prefix table:
 - `[^c-N]` - Claude reply

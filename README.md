@@ -168,7 +168,7 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 
 `#shopping` - Recurring purchases (groceries, household, consumables). Compiles to `_compiled/shopping.md` as a weekly rolling list. Items from the current week show at top, unchecked items from previous weeks carry over, checked items archive on Monday rollover. Same stable-hash pattern as `#tobuy`.
 
-`#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
+`#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`, etc) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
 `#plex` - Query your Plex Media Server via natural language. The assistant searches, pulls metadata, downloads posters, exports lists. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
 
@@ -191,6 +191,10 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 `#todo-done` - Your signal that a todo is closed. The assistant just filters it out on next regen.
 
 All your domain tags (`#Music`, `#Art`, `#Design`, `#Hardware`, `#Literature`, `#philosophy`, etc) are yours. The assistant reads them for context and co-occurrence but never processes them independently.
+
+### Tag incubator
+
+`_meta/tag-incubator.md` is a living document where the assistant logs unrecognized tags it encounters during processing. You tend to invent tags in-line as mental bookmarks for future use. Rather than lose those signals, the assistant tracks them. When a tag appears frequently or across multiple notes, it becomes a candidate for promotion to a full protocol tag with its own `_meta/` doc. No tag is too informal to track.
 
 ---
 
@@ -577,6 +581,8 @@ If you replicate this system, these are the docs the assistant reads at runtime.
 `_meta/decisions.md` - Why the rules are the way they are. The log that stops drift.
 
 `_meta/future.md` - Ideas considered but deferred, with revisit conditions.
+
+`_meta/tag-incubator.md` - Living log of unrecognized tags encountered during processing. Candidates for promotion to full protocol tags.
 
 ---
 

@@ -69,6 +69,8 @@ Daily notes are append-only. Claude never rewrites the body. Its edits are limit
 | `#dailyfilm` | Line compiled into `_compiled/film.md` |
 | `#dailyquote` | Line compiled into `_compiled/quotes.md` |
 | `#dailyart` | Line compiled into `_compiled/art.md` |
+| `#dailymeme` | Line compiled into `_compiled/memes.md` |
+| `#dailygame` | Line compiled into `_compiled/games.md` |
 
 ### Tags Claude owns
 
@@ -365,6 +367,7 @@ All core plugins, zero community plugins.
 | `_projects/_index.md` | Your project dashboard (compiled) |
 | `_rabbitholes/` | Deep-dive research notes |
 | `_meta/future.md` | Deferred ideas, not yet built |
+| `_meta/tag-incubator.md` | Living log of unrecognized tags, candidates for promotion |
 
 ---
 
