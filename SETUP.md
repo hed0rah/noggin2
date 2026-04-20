@@ -145,7 +145,7 @@ Tags the assistant acts on:
 - `#rabbithole` - deep-dive research, creates note in _rabbitholes/ (protocol: _meta/rabbithole.md)
 - `#tobuy` - wishlist (unique aspirational items), compiled to _compiled/tobuy.md (protocol: _meta/tobuy.md)
 - `#shopping` - recurring purchases, compiled to _compiled/shopping.md weekly rolling (protocol: _meta/shopping.md)
-- `#plex` - query Plex library via natural language, returns metadata/posters/lists via footnote (protocol: _meta/plex.md). Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp)
+- `#plex` - query Plex library via natural language, returns metadata/posters/lists via footnote. Can enrich with RT/IMDB/Metacritic scores via usher-tools MCP (protocol: _meta/plex.md). Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp)
 - `#code` - programming tool/repo capture. With URL: scrape metadata, file to Programming/{Language}.md. Without URL: treat as idea/todo (protocol: _meta/code.md)
 - `#spot` - query Spotify via natural language. Resolve tracks/albums, fetch album art. Primary use: compose with `#dailymusic` to auto-fill Spotify links. Tag disappears on success. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp) (protocol: _meta/spot.md)
 - `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - line compiled to _compiled/*.md (protocol: _meta/compile.md)

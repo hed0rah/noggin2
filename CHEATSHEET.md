@@ -62,7 +62,7 @@ Daily notes are append-only. Claude never rewrites the body. Its edits are limit
 | `#rabbithole` | Deep-dive research. Claude creates a thorough standalone note in `_rabbitholes/` with structured research, sources, and wikilinks back into the vault |
 | `#tobuy` | Wishlist item (unique, bigger, one-off). Compiled to `_compiled/tobuy.md` as a living list. Check the box when acquired, or add `#tobuy-done` to archive |
 | `#shopping` | Recurring shopping (groceries, consumables). Compiled to `_compiled/shopping.md`. Check the box when bought, or add `#shopping-done` to archive |
-| `#plex` | Query your Plex library via natural language. Claude searches, pulls metadata, downloads posters, exports lists. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp) |
+| `#plex` | Query your Plex library via natural language. Claude searches, pulls metadata, downloads posters, exports lists. Can enrich with RT/IMDB/Metacritic scores via usher-tools MCP. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp) |
 | `#code` | Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo |
 | `#spot` | Query Spotify via natural language. Resolve tracks/albums, fetch album art, pull metadata. Primary use: compose with `#dailymusic` to auto-fill Spotify links. Tag disappears on success. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp) |
 | `#dailymusic` | Line compiled into `_compiled/music.md` |

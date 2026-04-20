@@ -170,7 +170,7 @@ Tags are the interface between you and the assistant. Drop a tag, the assistant 
 
 `#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`, etc) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
 
-`#plex` - Query your Plex Media Server via natural language. The assistant searches, pulls metadata, downloads posters, exports lists. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
+`#plex` - Query your Plex Media Server via natural language. The assistant searches, pulls metadata, downloads posters, exports lists. Can enrich results with external ratings (Rotten Tomatoes critic + audience, IMDB, Metacritic, TMDB) via usher-tools MCP for at-a-glance scores in footnotes. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
 
 `#code` - Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo.
 
