@@ -65,6 +65,7 @@ The heavier actions are powerful but infrequent, so instead of a tag each, they 
 | `#run title <url>` | fetch the page title, wrap a bare URL as `[Title](url)` |
 | `#run promote <what> -> <Folder>` | move daily content into a topic folder, with backlinks both ways |
 | `#run project <idea>` | scaffold `_projects/<slug>/brief.md` (what/why, plan, open questions) |
+| `#run review <thing>` | a critique pass over a note, plan, draft, or code: gaps, errors, weak spots, open questions |
 | `#run digest` | build this week's digest now |
 | `#run rebuild <cache>` | regenerate a `_compiled/*.md` file from the notes |
 

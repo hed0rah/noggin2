@@ -37,6 +37,7 @@ Write freely in today's note. Drop tags mid-sentence. The assistant catches up: 
 | `#run title <url>` | wrap a bare URL as `[Title](url)` |
 | `#run promote <what> -> <Folder>` | move daily content into a topic folder |
 | `#run project <idea>` | scaffold `_projects/<slug>/brief.md` |
+| `#run review <thing>` | critique a note/plan/draft: gaps, errors, weak spots |
 | `#run digest` | build this week's digest |
 | `#run rebuild <cache>` | regenerate a compiled file |
 

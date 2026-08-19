@@ -84,6 +84,7 @@ Unknown tags: log in `_meta/tag-incubator.md` with date and context. When one re
 - `#run title <url>` - fetch the page title and wrap a bare URL as `[Title](url)`. Surrounding text stays. If the fetch fails, leave the URL and note why. Protocol: `_meta/title.md`
 - `#run promote <what> -> <Folder>` - move daily-note content into a topic folder. Create or append, add a `Source: [[daily-note]]` header in the target and a `> promoted: [[Target]]` footer in the daily note. Never rewrite the daily body. Protocol: `_meta/promote.md`
 - `#run project <idea>` - scaffold `_projects/<slug>/brief.md`: what/why, plan, dependencies, open questions. Tool-agnostic. Protocol: `_meta/project.md`
+- `#run review <thing>` - a review pass over a note, plan, draft, or code. Report gaps, errors, weak spots, unstated assumptions, and open questions. Critique only, do not rewrite unless asked. Protocol: `_meta/review.md`
 - `#run digest` - generate the weekly digest now (see below).
 - `#run rebuild <cache>` - regenerate a `_compiled/*.md` file from scratch by grepping the notes.
 

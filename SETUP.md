@@ -36,6 +36,7 @@ The `#run` dispatcher and its verbs:
 - `title.md` - `#run title` fetch-and-wrap a bare URL.
 - `promote.md` - `#run promote` moving daily content to a topic folder with backlinks both ways.
 - `project.md` - `#run project` scaffolding `_projects/<slug>/brief.md`.
+- `review.md` - `#run review` critique pass over a note, plan, draft, or code.
 - `digest.md` - the weekly digest (`#run digest` or Sunday).
 
 System:
