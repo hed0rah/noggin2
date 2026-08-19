@@ -1,591 +1,184 @@
-# Noggin2: A Second-Brain System for Obsidian + LLM Assistant
+# Noggin2
 
-A complete guide to building and running a personal second-brain system using Obsidian and a local LLM assistant. No community plugins. No cloud ingest. Everything is plain markdown in one folder. Designed to survive ten years of daily use without ever requiring a migration.
+A second-brain system for Obsidian and an LLM assistant (Claude). No community plugins, no cloud ingest, no automation platform. Everything is plain markdown in one folder. The assistant catches up behind your capture instead of making you file things.
 
-This document is self-contained. Read it to understand the philosophy, then follow the setup section to build your own vault from scratch.
-
----
-
-## Philosophy
-
-Second-brain tools usually fail for one of two reasons. Either they over-index on capture (the user fills the vault with fragments that never get processed, and it becomes a digital junk drawer) or they over-index on structure (the user never captures anything because the ceremony of filing it is too expensive).
-
-Noggin2 splits the two jobs. Daily notes are for raw capture with zero ceremony. Topic folders are for processed, linked, durable knowledge. An LLM assistant bridges the two using tags as the interface. You never have to stop and think about where something goes. Just write. The system catches up.
-
-The constraints are intentional:
-
-- No plugins. Only Obsidian core features plus Obsidian Sync (optional, paid, phone to desktop). The vault must be readable and editable in plain Obsidian on any device.
-- No external services beyond Obsidian Sync. No cloud LLM ingest of the vault, no automation platforms, no webhooks. The only things that touch the vault are you, Obsidian, and the LLM assistant running locally.
-- Plain markdown. Everything the assistant produces stays as markdown so it is portable and Obsidian-native.
-- Manual backups to external HDD. You own recovery.
-
-The trust boundary is: you, Obsidian, the LLM assistant, and the filesystem. Nothing else.
+This README is self-contained. Read it, then copy the seed files (`CLAUDE.md`, `CHEATSHEET.md`, `_templates/daily_template.md`, and the `SETUP.md` prompt) into your own vault.
 
 ---
 
-## Folder Layout
+## Why
+
+Second-brain tools fail one of two ways. They over-index on capture, so the vault fills with fragments nobody processes and it rots into a junk drawer. Or they over-index on structure, so filing anything is expensive and you stop capturing at all.
+
+Noggin2 splits the two jobs:
+
+- **Daily notes** are for raw capture with zero ceremony. You write. You do not decide where anything goes.
+- **Topic folders** are for processed, linked, durable knowledge.
+- **An assistant** bridges the two, using tags as the interface. You never stop to file. The system catches up.
+
+The constraints are deliberate: plain markdown only, readable in vanilla Obsidian on any device forever; the only things that touch the vault are you, Obsidian, and the assistant. The trust boundary is you, Obsidian, the assistant, and the filesystem. Nothing else.
+
+---
+
+## How it works, in one picture
 
 ```
-YourVault/
-  CHEATSHEET.md               quick reference for daily use
-  _inbox.md                   friction-free capture buffer
-  _meta/                      protocol docs and assistant memory
-    README.md                 session-start checklist, tag conventions
-    SYSTEM.md                 full system overview (shareable)
-    voice.md                  observations on your writing style
-    linking.md                wikilink methodology
-    rename.md                 daily note filename convention
-    promote.md                topic-folder promotion workflow
-    compile.md                intake compilation protocol
-    digest.md                 weekly digest protocol
-    moc.md                    Maps of Content protocol
-    inbox.md                  inbox routing protocol
-    footnotes.md              footnote annotation protocol
-    seed.md                   creative seed tag protocol
-    todo.md                   todo aggregator protocol
-    claudecode.md             claudecode tag protocol
-    projects.md               project tracker protocol
-    title-me.md               URL title fetching protocol
-    rabbithole.md             deep-dive research protocol
-    tobuy.md                  wishlist compile protocol
-    shopping.md               shopping list compile protocol
-    decisions.md              append-only design decisions log
-    future.md                 deferred ideas, not yet built
-    askclaude/
-      README.md               askclaude tag protocol
-      log/
-        rolling.md            assistant's run log
-  _templates/
-    daily_template.md         daily note template
-  _compiled/                  auto-generated intake logs
-    music.md                  all #dailymusic entries
-    film.md                   all #dailyfilm entries
-    quotes.md                 all #dailyquote entries
-    art.md                    all #dailyart entries
-    inspiration.md            all #inspo sections
-    todos.md                  living checkbox list from #todo tags
-    tobuy.md                  wishlist compiled from #tobuy tags
-    shopping.md               weekly shopping list from #shopping tags
-  _digests/                   weekly digests (YYYY-Wxx.md)
-  _maps/                      Maps of Content (hand-curated hubs)
-  _projects/                  project tracker and Claude Code briefs
-    _index.md                 project dashboard
-  _rabbitholes/               deep-dive research notes from #rabbithole tags
-  Music Knowledge/            topic folder (playlists, theory, instruments)
-  Movies/                     topic folder (letterboxd, anime, plex exports)
-  Skateboarding/              topic folder (creative skaters, off-road, playlists)
-  Design/                     topic folder (typography, logo, print and layout)
-  Literature/                 topic folder
-  Hardware/                   topic folder
-  Ai/                         topic folder
-  Video Games/                topic folder
-  Programming/                topic folder (tools/repos by language, auto-filed by #code)
-  Cartography_Maps/           topic folder
-  Sculpture_Architecture/     topic folder
-  ...                         add your own
+you write all day                assistant catches up
+------------------               --------------------
+2026-05-06.md                    - answers #claude inline (as a footnote)
+  #dailymusic ...                - compiles #todo / #tobuy / #reminder to _compiled/
+  buy new strings #tobuy         - copies yesterday's note to a themed twin
+  fix the amp #todo              - seeds today's CONTINUED from open threads
+  who wrote this? #claude        - writes claudespeaks + recall
 ```
 
-Every topic folder contains an `_index.md` landing note that describes the folder's scope and companion tags. This file keeps the folder alive through Obsidian Sync (which tracks files, not folders), gives newcomers a landing page, and can grow into a Map of Content later.
-
-Hide from graph view: `_meta/`, `_compiled/`, `_digests/`, `_templates/`, `_rabbitholes/`, `_inbox.md`
+You capture in the stream. The assistant turns it into answers, lists, durable notes, and a running memory of what you are in the middle of.
 
 ---
 
-## Daily Notes
+## Three kinds of tag
 
-One per day. Today is always bare `YYYY-MM-DD.md`. After the day rolls over, the assistant adds a 2-4 word topic suffix: `2026-04-11 ripleys seiko.md`. The topic is the single most memorable or unusual thing in the note, not the most important. "shrek 2 bootleg" beats "movies". This gives graph view actual memory hooks instead of a wall of dates.
+The whole interface is tags, sorted by how often they fire. Keep the set small; hashtags are easy to over-invent.
 
-Template at `_templates/daily_template.md` gets auto-filled by Obsidian's core Daily Notes plugin. A reasonable starting template:
+### 1. Inline, acted on automatically (frequent)
+
+- `#claude` — you are asking. The assistant answers as a footnote without touching your line. `who painted this #claude` becomes `who painted this #claude[^c-1]` with the answer at the bottom.
+- `#todo` — compiled into `_compiled/todos.md`, one rolling checklist. Each item carries a stable block ref `^todo-XXXXXX` (hashed from the text and source) so your check-state survives every rebuild.
+- `#tobuy` — a living wishlist, same stable-hash checkboxes.
+- `#reminder` — resurfaced later in `## recall`, rotated by relevance to what you have been doing.
+
+### 2. Compiled intake (passive filing)
+
+- `#dailymusic`, `#dailyfilm`, `#dailyquote`, `#dailyart`, `#dailymeme`, `#dailygame` — each tagged line is copied into `_compiled/<name>.md`, a running log per category. Add your own (`#dailybook`, `#dailyskate`).
+- `#inspo` — inspiration you grabbed (a link, an image, a reference). Captured to `_compiled/inspiration.md`.
+- `#seed` — an idea that is *yours* (a premise, a sketch, a worldbuilding kernel). Compiled per-topic to `<Topic>/seeds.md`. The inspo/seed split exists so you never scroll past your own ideas thinking they are bookmarks. Inspo gets consumed; seeds get developed.
+
+### 3. `#run <verb>` — the on-demand dispatcher
+
+The heavier actions are powerful but infrequent, so instead of a tag each, they live behind one verb tag. Write it in a note or just ask.
+
+| command | what it does |
+| --- | --- |
+| `#run deepdive <topic>` | a structured research note (frontmatter, sections, sources, wikilinks) |
+| `#run rabbithole <topic>` | a verbose exploration note in `_rabbitholes/`, history and tangents and all |
+| `#run link [note]` | a linking pass: find related notes, add bidirectional wikilinks |
+| `#run title <url>` | fetch the page title, wrap a bare URL as `[Title](url)` |
+| `#run promote <what> -> <Folder>` | move daily content into a topic folder, with backlinks both ways |
+| `#run project <idea>` | scaffold `_projects/<slug>/brief.md` (what/why, plan, open questions) |
+| `#run digest` | build this week's digest now |
+| `#run rebuild <cache>` | regenerate a `_compiled/*.md` file from the notes |
+
+Bare `#deepdive` and `#rabbithole` (no `#run`) stay as quiet "maybe later" markers. `#run deepdive <topic>` is when you want it now.
+
+Anything unrecognized gets logged in `_meta/tag-incubator.md`; recurring tags are candidates to promote.
+
+---
+
+## The daily note lifecycle
+
+- **Today** is a bare-date file, `2026-05-06.md`. You append to it freely all day.
+- **The next day**, the assistant copies it to a themed twin, `2026-05-06 broken amp fix.md` (2 to 4 lowercase words, the most memorable thing). All processing happens in the twin; the bare original is frozen, and you delete it once you have glanced at the copy.
+- Daily notes are **append-only**. The assistant only adds footnote markers and its own two sections. Past lines are never rewritten; corrections are dated footnotes.
+
+Theme-on-copy is what keeps months of notes browsable. `2026-05-06 broken amp fix` tells you what that day was.
+
+---
+
+## Carryover: the note that remembers what you were doing
+
+The piece that makes it feel like a second brain rather than a filing cabinet. When a new day's note is created, the assistant seeds its `## CONTINUED` section with the threads still open the day before. You open today and it already lists what you were mid-stream on. Each line is terse; the detail hangs in a footnote:
 
 ```
-#dailymusic 
-#dailyquote 
-#dailyfilm 
-#dailyart 
+## CONTINUED
 
----
+> from 2026-05-05, terse on purpose. click a footnote for the detail.
 
-## claudespeaks
-
-
----
-
-## projects
-
-
----
-
-## links
-
-
----
-
-## inspo
-
-
----
-
-## ideas
-
-
----
-
-## dump
-
-
----
-```
-
-The daily intake tags at the top force you to ingest something interesting every day, starting with music as the lowest friction entry point. `## claudespeaks` is where the assistant writes its daily thought (see below). The remaining sections are zones, not walls: `## projects` for active build work, `## links` for repos, articles, tools, references, `## inspo` for visual/design inspiration and images, `## ideas` for bright ideas, seeds, questions, speculative stuff, `## dump` for everything else. If you are in a hurry, throw everything in dump. Adapt to your own habits.
-
-Daily notes are append-only. The assistant never rewrites the body. Its edits are limited to appending footnote markers (`[^c-1]`) and definitions in a `## footnotes` section at the bottom, writing the `#claudespeaks` block during scheduled run, or adding a small `> promoted: [[Target]]` footer when material gets lifted into a topic folder.
-
----
-
-## Tags
-
-Tags are the interface between you and the assistant. Drop a tag, the assistant acts on it next time it runs.
-
-### Tags the assistant acts on
-
-`#askclaude` - Ask a question inline. The assistant answers via footnote (simple case) or creates a new topic-folder note and references it from a short footnote (complex case). The original line is never rewritten beyond the appended footnote marker.
-
-`#link-me` - Request a linking pass. The assistant finds related notes via grep, adds wikilinks inline or in a `Related:` footer, and makes them bidirectional.
-
-`#todo` - Compiled into `_compiled/todos.md` as a checkbox list with stable identities (so check state survives regeneration). Check the box to mark done. Add `#todo-done` to the source line to archive it out of the list entirely.
-
-`#inspo` - Section captured into `_compiled/inspiration.md`. Drop alongside a domain tag (`#Design`, `#Hardware`, etc) for filtering. Captures from the tag line down to the next `---` or next tag-prefixed line.
-
-`#seed` - Your own creative fragments (story ideas, premises, character sketches). Compiled per-topic into `Topic/seeds.md`. Same section capture as `#inspo` but routes by co-occurring domain tag. Seeds are things you generated. Inspo is things you grabbed. They compile separately because they want different treatment: inspo gets returned-to-and-consumed, seeds get returned-to-and-developed.
-
-`#claudecode` - Drop a build idea for a Claude Code project. The assistant creates `_projects/<slug>/brief.md` with a structured project plan ready to copy directly into a Claude Code session. Same footnote-marker workflow as `#askclaude`.
-
-`#title-me` - Fetch a page title for a raw URL and replace the line with a titled markdown link. Drop it next to any raw URL you pasted in a hurry. The assistant fetches the page, grabs the title, and swaps in `[Title](url)`. Tag disappears on success. If the page can't be fetched, tag stays for retry and a footnote explains why.
-
-`#rabbithole` - Deep-dive research. Drop it with a topic and the assistant creates a thorough standalone note in `_rabbitholes/` with structured research, sources, and wikilinks back into the vault. Add a domain tag for context (`#rabbithole #Hardware how CRT electron guns work`). This is the one place where verbose, link-dense output is encouraged. The assistant does the diving so you don't have to.
-
-`#tobuy` - Wishlist for unique, bigger, one-off items (rare gear, weird objects, curiosities). Compiles to `_compiled/tobuy.md` as a single living checkbox list with stable hash identities (so check state survives regeneration). Check the box when acquired, or add `#tobuy-done` to the source line to archive.
-
-`#shopping` - Recurring purchases (groceries, household, consumables). Compiles to `_compiled/shopping.md` as a weekly rolling list. Items from the current week show at top, unchecked items from previous weeks carry over, checked items archive on Monday rollover. Same stable-hash pattern as `#tobuy`.
-
-`#dailymusic` / `#dailyfilm` / `#dailyquote` / `#dailyart` / `#dailymeme` / `#dailygame` - Line compiled into the corresponding `_compiled/*.md` file. These live paired with existing base tags (`#Music`, `#Movie`, `#Quote`, `#Art`, etc) at the top of daily notes. The base tag is your domain marker. The daily tag is the compile trigger.
-
-`#plex` - Query your Plex Media Server via natural language. The assistant searches, pulls metadata, downloads posters, exports lists. Can enrich results with external ratings (Rotten Tomatoes critic + audience, IMDB, Metacritic, TMDB) via usher-tools MCP for at-a-glance scores in footnotes. Results go in footnotes. Requires [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
-
-`#code` - Programming tool/repo capture. With a GitHub/PyPI URL: scrape metadata (name, language, description), file to `Programming/{Language}.md`, title the link. Without URL: treat as code idea/todo.
-
-`#spot` - Query Spotify via natural language. The assistant searches, resolves track/album metadata, fetches album art, and rewrites the source line with a titled Spotify link. Primary use case is composing with `#dailymusic`: write `#dailymusic Artist - #spot track name` and the assistant auto-fills the Spotify link, removing the `#spot` tag on success. Can also use the recently-played API to identify what you were listening to earlier. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp).
-
-### Tags the assistant owns
-
-`#claudespeaks` - The assistant's daily thought, written into the `## claudespeaks` section of today's daily note during scheduled run or session start. One block per day, one focus, no preamble. Can be anything: a music recommendation, a historical connection, a half-formed idea, a question back to you, a link, a provocation. Should draw on recent vault activity and your interests. Never filler. Leave it empty rather than force something.
-
-### Tags the assistant never touches
-
-`#deepdive` - Your marker next to a link that goes deep. Not a request to the assistant.
-
-`#followup` - Revisit later. Same deal.
-
-`#Brightidea` - Your marker for ideas worth developing.
-
-`#todo-done` - Your signal that a todo is closed. The assistant just filters it out on next regen.
-
-All your domain tags (`#Music`, `#Art`, `#Design`, `#Hardware`, `#Literature`, `#philosophy`, etc) are yours. The assistant reads them for context and co-occurrence but never processes them independently.
-
-### Tag incubator
-
-`_meta/tag-incubator.md` is a living document where the assistant logs unrecognized tags it encounters during processing. You tend to invent tags in-line as mental bookmarks for future use. Rather than lose those signals, the assistant tracks them. When a tag appears frequently or across multiple notes, it becomes a candidate for promotion to a full protocol tag with its own `_meta/` doc. No tag is too informal to track.
-
----
-
-## Footnotes
-
-Footnotes are the annotation layer. They keep the main body of a note pristine while carrying commentary, sources, corrections, digressions, and assistant replies underneath. Obsidian renders them natively: `[^marker]` inline, `[^marker]: definition` at the bottom. Ctrl-click a marker to jump to its definition.
-
-Every footnote marker uses a namespaced prefix so retrospective grep queries work:
-
-`[^c-N]` - Assistant's reply to an `#askclaude` tag. Example: `[^c-1]`
-
-`[^src-slug]` - Source or provenance citation. Example: `[^src-wikipedia]`
-
-`[^YYYY-MM-DD-slug]` - Dated future-you annotating past-you. Example: `[^2026-04-12-wrong]`
-
-`[^dig-N]` - Digression you pulled out of (the rabbit hole you captured but did not go down). Example: `[^dig-1]`
-
-`[^def-word]` - Glossary or etymology drop. Example: `[^def-qid]`
-
-`[^note-slug]` - General side note. Example: `[^note-fuzz-pedals]`
-
-Definitions live under a `## footnotes` section at the bottom of each note. The assistant creates this section when adding its first footnote to a file.
-
-The key rule: never edit a past line to match new information. If something you wrote turns out to be wrong, add a dated footnote. The original thought stays intact with its original energy. The correction is a layer on top. The archaeology matters.
-
-This is the commonplace-book pattern. You get to be two people having a conversation across time.
-
-### Grep patterns for retrospective queries
-
-```
-# every assistant reply ever
-grep -rn --include="*.md" -E '^\[\^c-' .
-
-# every dated future-self annotation
-grep -rn --include="*.md" -E '^\[\^\d{4}-' .
-
-# every digression capture
-grep -rn --include="*.md" -E '^\[\^dig-' .
-
-# every source citation
-grep -rn --include="*.md" -E '^\[\^src-' .
-```
-
----
-
-## Workflows
-
-### Ask the assistant a question
-
-Drop `#askclaude` anywhere in a note with your question:
-
-```
-#askclaude what is the name of that Raymond Scott sequencer with rotating contacts
-```
-
-The assistant appends `[^c-1]` and puts the answer in `## footnotes`:
-
-```
-#askclaude what is the name of that Raymond Scott sequencer[^c-1]
+- finish the fuzz pedal, box it up[^cf1]
+- reply to the label about stems[^cf2]
 
 ## footnotes
 
-[^c-1]: the Circle Machine, built ~1959 as part of the Electronium project. 
-Rotating disc with adjustable photocells that trigger tones in sequence. 
-Direct ancestor of the step sequencer. -- 2026-04-12
+[^cf1]: germanium fuzz build. next: drill the enclosure, mount pots, test bypass. -- 2026-05-06
 ```
 
-If the answer is big enough for its own note, the footnote is a one-liner with a wikilink:
-
-```
-[^c-1]: full list in [[Experimental Sculpture]]. 4 new kinetic sculptors added. -- 2026-04-12
-```
-
-### Drop inspiration
-
-```
-#inspo #Design tunnel books / accordion style 3d
-https://rarebooks.uflib.ufl.edu/research-teaching/tunnel-books/
-https://x.com/historichub/status/2036753542845989121
-```
-
-The section from `#inspo` to the next `---` gets captured into `_compiled/inspiration.md`. Filter later with Obsidian search: `path:_compiled/inspiration tag:#Design`.
-
-### Drop a creative seed
-
-```
-#seed #Literature A snail baby lives its life, growing older and longer,
-climbing the ever lengthening staircase that is its shell.
-```
-
-Compiled into `Literature/seeds.md`. Seeds are what you generated. Inspo is what you grabbed. The split exists because scrolling past your own ideas thinking they are someone else's links is a failure mode.
-
-### Capture a todo
-
-```
-#todo build a compiler that mimics the genome
-```
-
-Shows up in `_compiled/todos.md` as a checkbox:
-
-```
-- [ ] build a compiler that mimics the genome  ^todo-27840b
-```
-
-The `^todo-27840b` is an Obsidian block reference derived from a hash of the text and source filename. It is stable across regenerations, so your check state persists.
-
-### Promote daily-note content to a topic folder
-
-Ask the assistant explicitly: "promote the seiko stuff from today into Design/". The assistant creates or appends to a note in the target folder, adds a `Source: [[daily-note]]` header, and adds a small `> promoted: [[Target]]` footer in the daily note. The daily-note body is never rewritten.
-
-Promotion is never automatic. Always on your request.
-
-### Request a linking pass
-
-Drop `#link-me` in a note. The assistant finds related notes via grep, adds wikilinks inline or in a `Related:` footer, and makes them bidirectional: if A links to B, B gets a link back to A.
-
-### Quick capture from anywhere
-
-Open `_inbox.md`. Type one line. Save. The assistant empties it next session, routing by hints:
-
-```
-some fragment                          -> today's daily note (default)
--> Music Knowledge  some fragment      -> that topic folder
--> append [[Note Name]]  some text     -> appends to an existing note
--> askclaude  some question            -> treated as a question
--> defer  something for later          -> stays in inbox
-```
-
-### Regenerate compiled files
-
-Ask "rebuild the compiled files" or "update todos.md". The assistant regenerates from scratch by grepping daily notes. Compiled files are caches. The daily notes are always the source of truth.
-
-### Weekly digest
-
-Auto-generated Sunday morning at `_digests/YYYY-Wxx.md`. Summary of the week's daily notes, intake counts by category, recurring themes, unresolved askclaude items, promotion candidates, and orphan notes. It is the reader's companion to the writer's daily capture.
-
-### Rename old daily notes
-
-Ask "rename the daily notes that need topics". The assistant grabs everything earlier than today, picks topics (most memorable/unusual thing), updates any internal wikilinks first, then renames. Current day is never touched.
-
-### Title a raw URL
-
-```
-#title-me https://www.luhringaugustine.com/exhibitions/emily-kraus
-```
-
-Becomes: `[Emily Kraus - Luhring Augustine](https://www.luhringaugustine.com/exhibitions/emily-kraus)`. Works with surrounding text too (your words stay, the URL gets wrapped). If the page can't be fetched, tag stays and you get a footnote explaining why.
-
-### Capture something to buy
-
-```
-#tobuy Chinese pickling jar with water moat seal
-#shopping olive oil, coffee filters
-```
-
-`#tobuy` is for wishlist (unique, rare, aspirational, one-off). Compiles to `_compiled/tobuy.md` as a living list. `#shopping` is for recurring purchases (groceries, household). Compiles to `_compiled/shopping.md` as a weekly rolling list with Monday rollover. Both use stable-hash checkboxes that persist across regenerations. Check the box when acquired/bought, or add `-done` suffix to the source tag.
-
-### Auto-fill daily music from Spotify
-
-```
-#dailymusic Tim Exile - #spot what album was I listening to earlier
-#dailymusic #spot Hedex & Ray Volpe - new collab. pull album art
-```
-
-The `#spot` tag composes with `#dailymusic`. The assistant resolves the query via Spotify (search, recently-played history, artist discography), rewrites the line with a titled Spotify link, saves album art to the vault if requested, and removes the `#spot` tag. The `#dailymusic` tag stays for compilation. Can also be used standalone for any Spotify query. Requires [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp).
-
-### Go down a rabbithole
-
-```
-#rabbithole #Hardware how CRT electron guns actually work
-```
-
-The assistant creates `_rabbitholes/crt-electron-guns.md` with a thorough research piece: history, technical details, tangents, sources, and wikilinks to related vault notes. If a rabbithole note on the same topic already exists, new findings are appended with a dated section header. This is the one place where verbose output is the point.
-
-### Kick off a Claude Code project
-
-Drop `#claudecode` in a daily note with a build idea:
-
-```
-#claudecode build a second-brain backup system that syncs vault to IPFS
-```
-
-The assistant creates `_projects/<slug>/brief.md` with: project what/why, architecture, implementation plan, dependencies, open questions, and a ready-to-paste Claude Code session prompt. The brief is designed so you can copy it straight into a Claude Code session and start building immediately.
-
-### Check your project dashboard
-
-Open `_projects/_index.md`. The dashboard shows all projects across five tiers: active, queued, stale, sparks, and shipped. Each entry includes the project name, last-seen date with source tag, and a quick summary. Run this before standing up new work to surface anything you may have forgotten.
+Finished items drop off. The list shrinks as you close things out.
 
 ---
 
-## The Todo Aggregator
+## claudespeaks and recall
 
-`_compiled/todos.md` is a living checkbox list compiled from every `#todo` line in the vault. Each item carries a stable Obsidian block reference (`^todo-XXXXXX`) derived from a hash of the text and source, so your check state survives regeneration.
-
-Two ways to mark done:
-
-1. Check the box in the collector. Item moves to `## completed` on next regen.
-2. Add `#todo-done` to the line in the daily note. Item disappears from the collector entirely.
-
-Active items are grouped by source note, sorted by date descending (most recent at top). Completed items collect at the bottom.
+Two sections the assistant writes once a day. `## claudespeaks` is one block: a thought or a connection drawn from your recent activity, specific rather than generic. `## recall` surfaces 2 to 3 `#reminder` items, rotated so old reminders resurface when they matter.
 
 ---
 
-## The Inspo/Seed Split
+## Footnotes as a greppable history
 
-Two tags for two kinds of "things worth coming back to":
-
-`#inspo` is external. A link, an image, a book recommendation, a design reference. Origin is outside you. Compiles into one global file: `_compiled/inspiration.md`.
-
-`#seed` is internal. A story fragment, a premise, a character sketch, a worldbuilding kernel. Origin is you. Compiles per-topic: `Literature/seeds.md`, `Hardware/seeds.md`, etc.
-
-Both use section capture (tag line to next `---`). Both use co-occurring domain tags for filtering. The split exists because they want different downstream treatment. Inspo gets consumed. Seeds get developed. Conflating them means you scroll past your own ideas thinking they are bookmarks.
+The assistant never edits your words. It replies in footnotes keyed by prefix: `[^c-N]` (answers), `[^cf-N]` (carried-forward), `[^remind-N]` (reminders). Every one ends with ` -- YYYY-MM-DD`. So `grep -rn '\[^c-' .` is every answer you ever got, with dates.
 
 ---
 
-## Project Tracker
+## The inbox
 
-Your build ideas live in `_projects/_index.md`, a five-tier dashboard aggregating projects across the vault. Tiers: active (actively being developed), queued (ready when bandwidth opens), stale (no signal in 14+ days), sparks (raw ideas), and shipped (completed work).
+`_inbox.md` at the root is a friction-free capture buffer. Type one line anywhere, save. The assistant empties it next pass, routing by hint:
 
-Each project carries a `last seen: YYYY-MM-DD` date with a source tag indicating where the signal came from (vault mention, session transcript, machine directory scan, GitHub activity).
-
-The tracker uses live signal sources to detect project health. These include vault grep (daily note mentions and `#Brightidea` tags), session transcripts (mentions in interactive work), directory scanning of ~/Projects on any machine the assistant can reach via SSH, and GitHub repo activity. On every run, the assistant checks all sources and updates project visibility. Projects with no signal across any source in 14+ days auto-move to stale tier. Stale means "you probably forgot about this", not dead.
-
-Deduplication during compile passes ensures that mentions of the same project across different notes and sources are rolled up into a single tracker entry.
-
-Weekly digest includes a project health section reporting which projects moved tiers and why.
-
----
-
-## The Decisions Log
-
-`_meta/decisions.md` is an append-only record of every design decision about the system: the rule, the reason, and which doc codifies it. New entries go on top. Old entries are never edited or deleted.
-
-The point of the log is to stop rules from drifting. If six months from now you wonder "why does the assistant not rename today's daily note?", the answer lives in the decisions log with the reason, not just a codified rule you no longer remember agreeing to.
-
-When changing a decision, add a new entry on top. The old entry stays. The history is the point.
+```
+some fragment                  -> today's daily note (default)
+-> Music  some fragment        -> that topic folder
+-> append [[Note]]  some text  -> appended to an existing note
+-> claude  some question       -> treated as a #claude question
+-> defer  something            -> stays in the inbox
+```
 
 ---
 
-## Voice Preservation
+## Weekly digest
 
-You write in fragments, tag-prefixed sections, raw URLs, image embeds. The assistant does not prose-ify your writing. When promoting material out of a daily note into a topic folder, the raw fragments stay raw; structure and links are added around them. The assistant's own content is kept visually distinct (footnotes under a `## footnotes` section, namespaced marker prefixes like `[^c-1]`) so you always know who wrote what.
-
-The assistant maintains a `_meta/voice.md` file with observations about your writing style, recurring patterns, and structural conventions. It updates this file as new patterns emerge. This is how the assistant matches your tone when composing new content in topic folders.
+On a Sunday (or `#run digest`), the assistant writes `_digests/YYYY-Wxx.md`: intake counts by category, recurring themes, open `#claude` items, promotion candidates, orphan notes. The reader's companion to the writer's daily capture.
 
 ---
 
-## Maps of Content
+## Rules the assistant follows
 
-`_maps/` holds hand-curated hub notes that collect wikilinks to the best material in the vault on a single theme. Examples: `Audio and Synthesis.md`, `Hardware Hacking.md`, `Sci-fi Worldbuilding.md`.
-
-MOCs are reader's indexes. Topic folders are library stacks. Graph view clusters around MOCs as hub nodes.
-
-The assistant never autonomously creates MOCs. They represent your editorial judgment about what matters. The assistant only edits them on your explicit request.
-
----
-
-## Rules
-
-1. Today's daily note is never renamed. Topic suffix gets added the next day or later.
-2. Daily notes are never rewritten. The assistant's edits are surgical (footnotes, `#claudespeaks`, and `> promoted:` footers only).
-3. Promotion to topic folders is always user-requested, never automatic.
-4. Compiled files are caches. Regenerate from scratch. Never hand-edit (except checkbox state in todos).
-5. `#daily*` tags are paired with base tags, not replacing them. Both stay.
-6. Scheduled runs are grep-first: zero work means one grep and one log line. No wasted tokens.
-7. Screenshots can be OCR'd and removed. Handwritten content stays unless explicitly told otherwise.
-8. Never edit a past line to correct it. Add a dated footnote instead.
-9. No community plugins, no cloud LLM ingest, no automation platforms. Obsidian core + Sync + local assistant. That is the trust boundary.
+- Copy before editing a past daily note; the bare original is frozen once a themed twin exists.
+- Append-only; correct with a dated footnote, never a rewrite.
+- Never promote into a topic folder, or invent Maps of Content, unprompted.
+- Load a protocol doc only when there is work that needs it.
 
 ---
 
-## Obsidian Setup
+## Obsidian setup
 
-All core plugins, zero community plugins.
-
-**Daily Notes plugin:** template path `_templates/daily_template`, date format `YYYY-MM-DD`, new file location at vault root.
-
-**Templates plugin:** for manual template insertion via hotkey.
-
-**Outline, Graph, Backlinks:** core navigation.
-
-**Excluded from graph:** `_meta/`, `_compiled/`, `_digests/`, `_templates/`, `_inbox.md`
-
-**Obsidian Sync** (optional, paid): phone to desktop replication. The system works without it, but Sync is how phone captures reach the desktop vault.
+Vanilla, no community plugins. Turn on the core **Daily notes** plugin, point it at your vault, template `_templates/daily_template.md`. Sync is your choice (Obsidian Sync, a git repo, a synced folder); the vault is just markdown.
 
 ---
 
-## Assistant Operating Model
+## Build it from scratch
 
-The assistant runs in two contexts:
-
-**Interactive session.** When you open a session, the assistant does a cheap check: grep for pending tags (`#askclaude`, `#link-me`, `#claudecode`, `#title-me`, `#rabbithole`, `#plex`, `#code`, `#spot`). Zero matches means it skips to writing `#claudespeaks` (if the section is empty) and then handles whatever you came to do. Tags found means it reads the relevant protocol doc lazily, processes the tags, writes `#claudespeaks`, and briefly reports what was done.
-
-**Scheduled run.** A daily task at 6AM local time runs the same grep-first protocol. Processes `_inbox.md` first, then tags. Zero pending tags means it skips straight to `#claudespeaks`. The assistant always writes `#claudespeaks` in today's daily note if the section is empty (this runs even on zero-tag days). Results are logged to `_meta/askclaude/log/rolling.md`. A separate Sunday morning task generates the weekly digest.
-
-Token usage is a design constraint. The processing logic lives in `_meta/askclaude/README.md` so the high-level README can be skipped on most runs. `voice.md` is only loaded when the assistant is actually composing new content.
-
-The scheduled run does NOT do autonomous full-vault linking passes or promotions. Those are user-requested only.
+1. Make a vault (a folder) with `_meta/`, `_templates/`, `_compiled/`, `_inbox.md`.
+2. Drop `CLAUDE.md` at `.claude/CLAUDE.md`.
+3. Drop `_templates/daily_template.md` and rename the lanes to your domains.
+4. Paste the `SETUP.md` prompt to the assistant once; it scaffolds the `_meta/` docs and empty caches.
+5. Start writing daily notes. Ask for a catch-up pass whenever.
 
 ---
 
-## How to Build This From Scratch
+## Optional: MCP extensions
 
-1. Install Obsidian. Create a vault at a path you own.
-2. Optionally buy Obsidian Sync for cross-device replication.
-3. Create the folders:
-   - `_meta/`
-   - `_meta/askclaude/`
-   - `_meta/askclaude/log/`
-   - `_templates/`
-   - `_compiled/`
-   - `_digests/`
-   - `_maps/`
-   - Plus whatever topic folders you care about (start with 3-5, add as you go)
-4. Create `_templates/daily_template.md` with your daily intake tags.
-5. Create `_inbox.md` at the vault root (empty file).
-6. Create `_meta/decisions.md` (empty log with the header pattern).
-7. Create `_meta/voice.md` (seed it with a few observations about how you write).
-8. Seed each topic folder with an `_index.md` landing note describing its scope and companion tags.
-9. Create empty compiled files: `_compiled/music.md`, `film.md`, `quotes.md`, `art.md`, `inspiration.md`, `todos.md`.
-10. Enable core plugins: Daily Notes (set template path, filename format `YYYY-MM-DD`), Templates, Outline, Graph, Backlinks.
-11. Set the graph exclusions: `_meta/`, `_compiled/`, `_digests/`, `_templates/`, `_inbox.md`.
-12. Set up a Claude cowork session (or any local LLM agent) pointed at the vault folder with read/write access.
-13. Configure a daily 6AM scheduled task: grep for pending tags, process `_inbox.md`, process tags, log results.
-14. Configure a Sunday morning digest task.
-15. Start capturing. Drop tags wherever. Let the system catch up.
-
-The whole system fits in one folder, one assistant, and one recurring schedule. That is the point.
+The core is vanilla. If you want richer capture, wire in MCP servers (resolve `#dailymusic` to real links, file code repos, query a media server) as optional add-ons, each with its own tag and `_meta/` doc. None of it is required.
 
 ---
 
-## Key Protocol Files
+## Layout
 
-If you replicate this system, these are the docs the assistant reads at runtime. You do not need to read them all, but they are the specification:
-
-`_meta/README.md` - Session-start checklist, full tag conventions, operating principles.
-
-`_meta/SYSTEM.md` - Full system overview. Shareable.
-
-`_meta/askclaude/README.md` - How the assistant processes `#askclaude` tags.
-
-`_meta/footnotes.md` - Footnote annotation layer: all six prefixes, compile interactions, placement rules.
-
-`_meta/seed.md` - `#seed` tag protocol, compile routing, the inspo/seed distinction.
-
-`_meta/todo.md` - Todo aggregator: hash-based stable identities, checkbox persistence, completion paths.
-
-`_meta/claudecode.md` - `#claudecode` tag protocol, project brief structure, Claude Code session prompts.
-
-`_meta/title-me.md` - `#title-me` tag protocol, URL title fetching, failure handling.
-
-`_meta/rabbithole.md` - `#rabbithole` tag protocol, deep-dive research notes, output format.
-
-`_meta/tobuy.md` - `#tobuy` wishlist compile protocol, single living list, stable hashes.
-
-`_meta/shopping.md` - `#shopping` weekly rolling list protocol, Monday rollover, archive rules.
-
-`_meta/projects.md` - Project tracker dashboard, five tiers, live signal sources, stale detection, deduplication.
-
-`_meta/plex.md` - `#plex` tag protocol, Plex library queries via [plex-usher-mcp](https://github.com/hed0rah/plex-usher-mcp).
-
-`_meta/code.md` - `#code` tag protocol, repo metadata scraping, `Programming/{Language}.md` filing.
-
-`_meta/spot.md` - `#spot` tag protocol, Spotify queries via [spotify-usher-mcp](https://github.com/hed0rah/spotify-usher-mcp), `#dailymusic` composition.
-
-`_meta/claudespeaks.md` - `#claudespeaks` protocol, daily assistant thought, quality rules.
-
-`_meta/compile.md` - How `_compiled/*.md` files are generated from daily-note tags.
-
-`_meta/rename.md` - Daily note filename convention, topic selection criteria, current-day rule.
-
-`_meta/linking.md` - Wikilink methodology, when to link, bidirectional rules.
-
-`_meta/promote.md` - Topic-folder promotion workflow.
-
-`_meta/digest.md` - Weekly digest generation.
-
-`_meta/moc.md` - Maps of Content protocol.
-
-`_meta/inbox.md` - Inbox routing protocol.
-
-`_meta/voice.md` - Your writing style observations.
-
-`_meta/decisions.md` - Why the rules are the way they are. The log that stops drift.
-
-`_meta/future.md` - Ideas considered but deferred, with revisit conditions.
-
-`_meta/tag-incubator.md` - Living log of unrecognized tags encountered during processing. Candidates for promotion to full protocol tags.
-
----
-
-## When in Doubt
-
-Just capture. Drop it in a daily note or `_inbox.md` with whatever tags feel right. File-friction is the enemy of a second brain. You and Sunday-you will sort it out later.
+```
+YourVault/
+  .claude/CLAUDE.md          assistant instructions (this repo)
+  CHEATSHEET.md              quick daily reference
+  _inbox.md                  friction-free capture buffer
+  _templates/daily_template.md
+  _meta/                     protocol docs + assistant memory (from SETUP.md)
+  _compiled/                 auto-generated logs (todos, tobuy, reminders, daily-*, inspiration)
+  _rabbitholes/  _digests/  _projects/    generated by #run verbs
+  2026-05-06 broken amp fix.md            themed daily notes
+  Topic Folders/             durable, linked knowledge (+ per-topic seeds.md)
+```
